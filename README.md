@@ -4,27 +4,48 @@ Three small, independent guardrails for AI coding agents. Each one works two way
 
 ## slop-scrub
 
-**What it is:** a 13-point checklist that catches AI writing tells: em dashes, banned words ("delve," "robust," "unlock"), fake profundity, fabricated stats, engagement-bait endings, and staccato runs of verdict-like sentences.
+Use the 14 checks to verify claims against their sources and find details the draft needs from its author. The checklist also catches repetitive sentences and wording that gets in the reader's way.
 
-**Why it was built:** AI-generated copy has predictable, catchable patterns that make it read as obviously AI-written. Most of them are individually easy to miss but obvious in aggregate, so a one-off glance at a draft doesn't reliably catch them. A checklist run every time does.
+### Example: an unedited AI draft
 
-**Why it's useful:** anything you publish under your own name (emails, social posts, docs, blog content) reads better and less generic once these tells are gone.
+A fresh AI writer produced this first draft from fictional project notes, without loading either checklist. The draft was frozen before the scrub runs. Both edits used the same notes, with no voice sample. [Raw draft and supplied facts](tests/fixtures/ai/challenge/blog-intro.facts.json)
 
-**What it looks like.** Before:
+The notes describe Nora Ellis coordinating 12 volunteers at Portside Archive in Charleston. They inventoried 640 boxes over 2 Saturdays, found 37 duplicate labels, spent 18 hours relabeling, and photographed every shelf.
 
-> In today's fast-paced world, developers navigate an increasingly complex landscape of tooling. Our robust CLI empowers engineers to seamlessly unlock their workflow potential — it's not just a task runner, it's a paradigm shift. Studies show 87% of developers lose hours to context switching. Ready to transform how your team ships? Drop a comment below.
+**Before: unedited AI draft**
 
-After:
+> There is something satisfying about making a collection easier to navigate, especially when the work is shared. At Portside Archive in Charleston, Nora Ellis coordinated a volunteer cataloguing project that brought that idea into focus. The inventory covered 640 boxes, with 12 volunteers working across 2 Saturdays. Along the way, the team found 37 duplicate box labels, took 18 hours in total to relabel them, and photographed every shelf.
+>
+> Those details offer a vivid picture of the care behind an inventory. A label is a small thing, but it is also a point of reference for anyone trying to understand where a box belongs. Photographs add another way to see the shelves, while the time spent relabeling shows the patient attention involved in making the records clearer.
+>
+> What stands out is the collective nature of the effort: volunteers giving their attention to the boxes, the labels, and the shelves as parts of the same project. It is an encouraging reminder that cataloguing is made up of tangible, deliberate actions. This project offers a chance to reflect on those actions and on the people who bring their care to the work.
 
-> Most task runners make you learn a new config language. This one reads the scripts already in your `package.json` and runs them in parallel, without the output interleaving into mush.
+**After: the new checklist**
 
-Caught in that one paragraph: eight banned words and phrases (`in today's fast-paced world`, `navigate`, `landscape`, `robust`, `empowers`, `seamlessly`, `unlock`, `paradigm`), an "it's not X, it's Y" construction, an em dash, a statistic with no source behind it, and an engagement-bait closer.
+> Volunteers found 37 duplicate box labels while inventorying 640 boxes at Portside Archive in Charleston. Relabeling took 18 hours in all.
+>
+> Nora Ellis coordinated the cataloguing project with 12 volunteers over 2 Saturdays, and the team photographed every shelf.
+
+The edit keeps every supplied name and number while cutting claims about care and collective effort that add no fact. It replaces general commentary with the work the team did. This README version has 39 words and 261 characters, with mechanical findings falling from 2 to zero. It restores the cataloguing-project context from the notes; the saved benchmark retains the independent editor's 37-word output. These counts describe the local lint, not a detector verdict. [Copy the after text](examples/slop-scrub-after.txt) or inspect the [saved comparison](tests/fixtures/ai/challenge/evaluation.json).
 
 **The banned-word list is a starting point, not a ruling.** You'll disagree with parts of it, and you should. `leverage` and `robust` have honest uses. Open `skills/slop-scrub/SKILL.md`, edit the list in item 1, and make it yours. Forking it into something opinionated about *your* writing is the intended use, not a misuse.
 
 **As a skill:** copy `skills/slop-scrub/SKILL.md` into your tool's skills/instructions folder (for Claude Code: `~/.claude/skills/slop-scrub/`). In Claude Code it's then available as `/slop-scrub`. On any other AI tool, paste everything below the `---` frontmatter into your system prompt or custom instructions; it's self-contained.
 
-To preserve a project's writing voice, put two or three short, author-approved samples and one reader description in a root `VOICE.md`; start from [`examples/VOICE.md.template`](examples/VOICE.md.template).
+Put two or three short samples approved by the author in the root voice guide (`VOICE.md`) with a reader description and any words or phrases the author avoids. The strongest basis for the edit is the author's own wording, supported by their facts and approved samples. The checklist cannot guarantee a detector verdict. [Voice guide template](examples/VOICE.md.template)
+
+When the project has no voice guide, work from the person's original draft and notes, flagging any detail they still need to supply.
+
+### Local lint
+
+Give the linter a UTF-8 file or pipe text into standard input. Use `--json` for structured results.
+
+```sh
+python3 skills/slop-scrub/slop_lint.py draft.txt
+python3 skills/slop-scrub/slop_lint.py --json < draft.txt
+```
+
+Exit status is `0` for a clean scan, `1` for findings, or `2` for bad input. Run the full checklist after the scan, since the linter cannot assess author voice or whether the claims are supported.
 
 **As a hook:** see [`examples/pre-commit-hook.sh`](examples/pre-commit-hook.sh) or [`examples/github-actions.yml`](examples/github-actions.yml) for how to force it to run on every commit or PR instead of waiting for the agent to remember.
 
