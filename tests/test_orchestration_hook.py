@@ -17,10 +17,15 @@ HOOK = Path(
 EVIDENCE_ENV = "ORCHESTRATION_HOOK_TEST_EVIDENCE"
 RUN_MARKERS = (
     "CONTRACT FIRST",
-    "TEST LESS OFTEN",
     "KEEP THE RIG",
-    "60-minute target",
     "compare agents planned",
+    "FRESH seat",
+    "REVIEW BY WHAT THE CHUNK TOUCHES",
+    "RUN WHAT THE CHANGE TOUCHES",
+    "STOP WHEN THE ASK IS MET",
+    "never a target",
+    "spend so far",
+    "THIS job only",
 )
 
 
@@ -148,7 +153,8 @@ class OrchestrationHookTests(unittest.TestCase):
             "STOP AT THE PLAN",
             "CONTRACT FIRST",
             "KEEP THE RIG",
-            "60-MINUTE TARGET",
+            "NEVER A TARGET",
+            "FRESH SEAT",
         ):
             self.assertTrue(marker in normalized, "Missing plan marker: " + marker)
         self.assertNotIn(">>> END RECIPE <<<", context)
@@ -412,6 +418,65 @@ class OrchestrationHookTests(unittest.TestCase):
                     "assertion": str(failure.exception),
                 }
             )
+
+    def test_recipes_fit_readme_context_budget(self):
+        readme = (REPO / "README.md").read_text(encoding="utf-8")
+        limit = int(re.search(r'"additionalContextLimit":\s*(\d+)', readme)[1])
+        for mode in ("default", "plan"):
+            with self.subTest(mode=mode):
+                context = self.context(self.run_hook({
+                    "prompt": "u" + "c" + " workflow", "permission_mode": mode,
+                }))
+                self.assertLessEqual(len(context), limit)
+
+    def test_retired_phrases_are_absent(self):
+        for mode in ("default", "plan"):
+            context = self.context(self.run_hook({
+                "prompt": "u" + "c" + " workflow", "permission_mode": mode,
+            }))
+            for retired in (
+                "ONE combined seat", "LOOP UNTIL GENUINELY COMPLETE", "ON EVERY CHUNK",
+                "60-minute target", "standing, repeated", "~10 agents",
+            ):
+                with self.subTest(mode=mode, retired=retired):
+                    self.assertNotIn(retired.casefold(), context.casefold())
+
+    def test_run_has_one_fresh_fix_instruction(self):
+        context = self.assert_run(self.run_hook({"prompt": "u" + "c" + " workflow"}))
+        self.assertEqual(context.count("FRESH seat"), 1)
+
+    def test_recipe_heredocs_have_no_apostrophes(self):
+        recipes = re.findall(r"<<'RECIPE'\n(.*?)\nRECIPE", HOOK.read_text(), re.S)
+        self.assertEqual(len(recipes), 2)
+        for recipe in recipes:
+            self.assertNotIn("'", recipe)
+
+    def test_companion_rules_retire_old_instructions(self):
+        rules = (REPO / "examples/orchestration-rules.md").read_text()
+        self.assertIn("## Judgment: flag it, or fix it and keep going", rules)
+        for retired in (
+            "ONE combined seat", "combined fix seat", "LOOP UNTIL GENUINELY COMPLETE",
+            "ON EVERY CHUNK", "60-minute target", "standing, repeated", "~10 agents",
+            "roughly ten total seats",
+        ):
+            with self.subTest(retired=retired):
+                self.assertNotIn(retired.casefold(), rules.casefold())
+
+    def test_negative_control_rejects_old_fix_seat(self):
+        source = HOOK.read_text(encoding="utf-8")
+        self.assertEqual(source.count("FRESH seat"), 1)
+        with tempfile.TemporaryDirectory(prefix="hook-old-seat-") as directory:
+            mutated_hook = Path(directory) / "old-seat.sh"
+            mutated_hook.write_text(source.replace("FRESH seat", "ONE combined seat"))
+            result = self.run_hook({"prompt": "u" + "c" + " workflow"}, path=mutated_hook)
+            self.context(result)
+            with self.assertRaisesRegex(AssertionError, "Missing run marker") as failure:
+                self.assert_run(result)
+            self.negative_controls.append({
+                "mutation": "FRESH seat replaced by ONE combined seat",
+                "detected": True,
+                "assertion": str(failure.exception),
+            })
 
 
 if __name__ == "__main__":
