@@ -1,0 +1,3 @@
+You can now export all project tasks from Docknote to a single CSV file with each task’s owner and due date. The export excludes comments and attachments.
+
+During the beta, 41 teams took part, and 14 reported that they’d previously combined exports from separate projects. Thanks to the teams that took part.

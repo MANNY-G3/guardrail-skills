@@ -1,0 +1,9 @@
+Hi team! A quick heads-up from Maple Works: maintenance is scheduled for November 20, 2026, starting at 14 UTC and lasting 30 minutes.
+
+During the maintenance window, the dashboard will be read-only. Background jobs will continue, so please keep that distinction in mind as you plan any dashboard work around the window. Once maintenance is over, Priya Chen will test the invoice page.
+
+If you notice a problem, please report it in this same thread. Sharing what you were doing and what you observed will help give the team useful context as we look into it. Keeping reports together here will also make it easier for everyone following along to see the discussion.
+
+Thanks for taking a moment to plan around the read-only period, and thanks to Priya for checking the invoice page afterward. I appreciate everyone helping keep the details visible to the team. Please use this thread for any problems you spot so we can keep the conversation in one place.
+
+— Sam Ortiz

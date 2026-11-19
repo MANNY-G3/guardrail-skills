@@ -1,0 +1,25 @@
+{
+  "origin": "AI-generated synthetic fixture",
+  "genre": "blog introduction",
+  "facts": [
+    "Nora Ellis coordinated a volunteer cataloguing project at Portside Archive in Charleston",
+    "Inventory covered 640 boxes",
+    "12 volunteers worked across 2 Saturdays",
+    "Found 37 duplicate box labels",
+    "Relabeling took 18 hours total",
+    "Team photographed every shelf"
+  ],
+  "allowed_names": [
+    "Nora Ellis",
+    "Portside Archive",
+    "Charleston"
+  ],
+  "allowed_numbers": [
+    640,
+    12,
+    2,
+    37,
+    18
+  ],
+  "prompt_conditions": "First draft; 150\u2013350 words; use only supplied names, numbers and concrete claims; no revision or scrub."
+}

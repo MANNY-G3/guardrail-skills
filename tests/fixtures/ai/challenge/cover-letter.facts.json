@@ -1,0 +1,22 @@
+{
+  "origin": "AI-generated synthetic fixture",
+  "genre": "cover letter",
+  "facts": [
+    "Maya Reed previously worked at Portside Supply",
+    "Coordinated a calendar for 18 people",
+    "Logged missed handoffs falling from 9 to 3 over 6 weeks",
+    "Gathered feedback from colleagues"
+  ],
+  "allowed_names": [
+    "Maya Reed",
+    "Harbor Tools",
+    "Portside Supply"
+  ],
+  "allowed_numbers": [
+    18,
+    9,
+    3,
+    6
+  ],
+  "prompt_conditions": "First draft; 150\u2013350 words; use only supplied names, numbers and concrete claims; no revision or scrub."
+}

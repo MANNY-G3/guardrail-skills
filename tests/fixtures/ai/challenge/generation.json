@@ -1,0 +1,22 @@
+{
+  "origin": "AI-generated synthetic fixtures",
+  "model": "gpt-6.1-terra",
+  "stage": "First unedited drafts, frozen before lint measurement or either scrub run",
+  "inputs": "Coordinator-supplied fictional facts, names and numeric allowlists in each .facts.json",
+  "length": "150 to 350 words per draft, target 180 to 230",
+  "conditions": [
+    "No skill, checklist, previous fixture, result or repository guide loaded by the writer",
+    "No edits or scrub after first generation",
+    "Use digits for quantities and only supplied concrete facts",
+    "The writer reports length or fact failures instead of silently replacing a draft"
+  ],
+  "requested_tones": {
+    "cover-letter": "Warm and polished",
+    "linkedin-post": "Motivational and professional",
+    "cold-email": "Friendly consultative sales email",
+    "blog-intro": "Reflective and enthusiastic",
+    "product-update": "Celebratory customer update",
+    "slack-message": "Upbeat internal team message"
+  },
+  "scope": "A constructed style exercise, separate from the first thin-fact batch; no detector score or population-wide performance claim"
+}

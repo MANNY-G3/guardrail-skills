@@ -1,0 +1,222 @@
+{
+  "metric": "Mechanical lint findings",
+  "name_audit": "Names require a separate human review against each fact file",
+  "drafts": [
+    {
+      "file": "blog-intro.txt",
+      "versions": {
+        "before": {
+          "words": 177,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        },
+        "old": {
+          "words": 37,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        },
+        "new": {
+          "words": 31,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        }
+      },
+      "new_has_fewer_hits": false,
+      "new_improves_raw": false
+    },
+    {
+      "file": "cold-email.txt",
+      "versions": {
+        "before": {
+          "words": 176,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        },
+        "old": {
+          "words": 36,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        },
+        "new": {
+          "words": 33,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        }
+      },
+      "new_has_fewer_hits": false,
+      "new_improves_raw": false
+    },
+    {
+      "file": "cover-letter.txt",
+      "versions": {
+        "before": {
+          "words": 168,
+          "hits": 2,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": [
+            {
+              "item": 13,
+              "severity": "strong",
+              "pattern": "same-length-run",
+              "line": 1,
+              "column": 290,
+              "text": "I also gathered feedback from colleagues, taking time to listen to their perspectives and understand what they needed from a shared process. These experiences strengthened my appreciation for clear communication, thoughtful coordination, and the value of making information accessible to everyone involved. I would bring that same collaborative mindset to an operations role, approaching each responsibility with care and a willingness to learn."
+            },
+            {
+              "item": 2,
+              "severity": "review",
+              "pattern": "three-part-list",
+              "line": 1,
+              "column": 479,
+              "text": "for clear communication, thoughtful coordination, and the"
+            }
+          ]
+        },
+        "old": {
+          "words": 37,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        },
+        "new": {
+          "words": 39,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        }
+      },
+      "new_has_fewer_hits": false,
+      "new_improves_raw": true
+    },
+    {
+      "file": "linkedin-post.txt",
+      "versions": {
+        "before": {
+          "words": 166,
+          "hits": 1,
+          "kill_hits": 1,
+          "numbers_outside_facts": [],
+          "findings": [
+            {
+              "item": 2,
+              "severity": "kill",
+              "pattern": "negative-parallel",
+              "line": 3,
+              "column": 137,
+              "text": "not just the calendar itself, but"
+            }
+          ]
+        },
+        "old": {
+          "words": 32,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        },
+        "new": {
+          "words": 29,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        }
+      },
+      "new_has_fewer_hits": false,
+      "new_improves_raw": true
+    },
+    {
+      "file": "product-update.txt",
+      "versions": {
+        "before": {
+          "words": 171,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        },
+        "old": {
+          "words": 32,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        },
+        "new": {
+          "words": 31,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        }
+      },
+      "new_has_fewer_hits": false,
+      "new_improves_raw": false
+    },
+    {
+      "file": "slack-message.txt",
+      "versions": {
+        "before": {
+          "words": 172,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        },
+        "old": {
+          "words": 44,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        },
+        "new": {
+          "words": 26,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        }
+      },
+      "new_has_fewer_hits": false,
+      "new_improves_raw": false
+    }
+  ],
+  "human_controls": [
+    {
+      "file": "lincoln-1863.txt",
+      "original_words": 102,
+      "edited_words": 102,
+      "word_edits": 0,
+      "share_changed": 0.0,
+      "kill_hits": 0
+    },
+    {
+      "file": "roosevelt-1941.txt",
+      "original_words": 152,
+      "edited_words": 152,
+      "word_edits": 0,
+      "share_changed": 0.0,
+      "kill_hits": 0
+    }
+  ],
+  "drafts_with_fewer_hits": 0,
+  "drafts_improved_from_raw": 2,
+  "five_of_six_bar_met": false,
+  "new_zero_kill_bar_met": true
+}

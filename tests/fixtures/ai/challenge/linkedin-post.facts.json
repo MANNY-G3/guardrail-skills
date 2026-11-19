@@ -1,0 +1,23 @@
+{
+  "origin": "AI-generated synthetic fixture",
+  "genre": "LinkedIn post",
+  "facts": [
+    "Jordan Lee ran an onboarding pilot in April 2026",
+    "12 clients used it",
+    "A required-files checklist reduced median follow-up emails from 5 to 2",
+    "Clients could still contact the team directly",
+    "Jordan Lee wants feedback on the checklist"
+  ],
+  "allowed_names": [
+    "Jordan Lee",
+    "Northline Studio",
+    "April"
+  ],
+  "allowed_numbers": [
+    2026,
+    12,
+    5,
+    2
+  ],
+  "prompt_conditions": "First draft; 150\u2013350 words; use only supplied names, numbers and concrete claims; no revision or scrub."
+}
