@@ -457,7 +457,7 @@ class OrchestrationHookTests(unittest.TestCase):
         for retired in (
             "ONE combined seat", "combined fix seat", "LOOP UNTIL GENUINELY COMPLETE",
             "ON EVERY CHUNK", "60-minute target", "standing, repeated", "~10 agents",
-            "roughly ten total seats",
+            "roughly ten total seats", "test and independent review",
         ):
             with self.subTest(retired=retired):
                 self.assertNotIn(retired.casefold(), rules.casefold())
