@@ -76,7 +76,7 @@ AGENTS.md in Codex. Rigs belong in ~/.claude/rigs/ or ${CODEX_HOME:-~/.codex}/ri
 or an existing repo test folder. Never invent an unavailable model or scheduling API.
 
 1. PRODUCE THE PLAN ONLY. Decompose into testable chunks; name the seats you WOULD spawn,
-   the per-seat model tier, where adversarial review and real tests would sit.
+   the per-seat model tier, and the real tests. Only gates and named guards get a skeptic.
 
 2. READ-ONLY SCOUTS ONLY. You may spawn read-only scout agents to ground the plan in the
    real codebase. Spawn NOTHING that writes, edits, builds, or deploys.
@@ -87,11 +87,10 @@ or an existing repo test folder. Never invent an unavailable model or scheduling
    Claude examples: Fable for review, Opus for building, Sonnet for mechanical work.
    Codex: inherit the configured model unless the user or applicable instructions authorize
    a specific override. Never relabel a Codex model as a Claude model.
-   Fix loops count as ONE combined seat, not one per fix.
-   Also state a clock from measured numbers when available; otherwise label about 120 output
-   tokens a second per agent as an unmeasured planning assumption, plus
-   the rig run time. Give minutes per stage, the first clickable draft and the finish,
-   against a 60-minute target. If it cannot hit 60, name the wall and its number.
+   Count each fix as its own small fresh seat.
+   Give an estimate from measured numbers when available; label any assumed throughput as
+   an assumption. Include rig run time, minutes per stage, the first clickable draft and
+   the finish. An estimate, never a target.
    Plan around the KEEP THE RIG and CONTRACT FIRST rules: look in the tool-specific rigs folder before
    planning a rig agent, and write the shared contract first so chunks can run at once.
 
@@ -107,7 +106,7 @@ recipe="$(cat <<'RECIPE'
 
 The user asked for a multi-agent workflow. Within their stated task, build, test and review
 the local work. This recipe never expands their authorization or overrides plan mode,
-permissions, managed policy, spending controls or hook trust. Apply all of the following:
+permissions, managed policy, spending controls or hook trust. Apply all of the following for THIS job only. The recipe ends when this job ends and never becomes a standing rule:
 
 TOOL ADAPTER: In Claude Code, read ~/.claude/CLAUDE.md and use ~/.claude/rigs/.
 In Codex, read the applicable AGENTS.md instructions and use ${CODEX_HOME:-~/.codex}/rigs/.
@@ -117,16 +116,11 @@ patterns, not APIs that every tool provides. Never invent a missing tool or mode
 COST GATE (announce this BEFORE you spawn anything):
  - State planned SEAT COUNT, per-seat MODEL TIER, and the in-code FLEET_CAP.
  - Every workflow script MUST enforce FLEET_CAP in code, a hard cap, not a prose promise,
-   and FLEET_CAP never exceeds 7 concurrent agents, or a lower runtime/policy limit.
- - Fix/retry loops get ONE combined seat, never one seat per fix.
- - If the job wants more than ~10 agents total, pause and confirm scale before launching.
- - State a clock from measured numbers when available; otherwise label about 120 output
-   tokens a second per agent as an unmeasured planning assumption, plus the
-   rig run time. Give minutes per stage, the first clickable draft and the finish, against
-   a 60-minute target. If it cannot hit 60, name the wall and its number before launch.
- - At twice the time planned for a stage, tell the user and revise or split the work within
-   the approved budget and concurrency limit; never launch extra seats to evade a cap.
-   Every status note gives time left. Run page-wide checks before fanning out.
+   and FLEET_CAP never exceeds 7 concurrent agents, or a lower runtime/policy limit; never launch extra seats to evade a cap.
+ - Each fix goes to a FRESH seat with a short brief: the finding, the files, the test to run. Never resume a seat that carries hours of history, because every turn re-reads all of it.
+ - If the plan is much bigger than the ask sounds, say so and confirm before launching. Count cost in turns and tokens re-read, never in agents alone: a resumed agent costs more than a fresh one.
+ - Say how long you expect it to take and why, from measured numbers when available, and label any assumed throughput as an assumption. An estimate for the user, never a target and never a cutoff. Nothing gets killed.
+ - Every status note and every done message carries the spend so far: turns, seats started, seats resumed, tokens re-read, minutes of tests. It informs the user and never caps the work. Run page-wide checks before fanning out.
  - Before calling a stage done, compare agents planned with agents run, because a BLOCKED
    agent skips whatever sits behind it.
 
@@ -141,21 +135,16 @@ COST GATE (announce this BEFORE you spawn anything):
    (run stages independently, not as one big synchronized barrier, unless a stage truly
    needs all prior results at once).
    CONTRACT FIRST: write the shared contract first, in one agent, in about 5 minutes. Then each
-   chunk runs its spec, build, test and review as a pipeline within FLEET_CAP, with fixes
-   going to the one combined fix seat. Avoid a full-fleet barrier unless dependencies need it. Anything that
+   chunk runs its spec, build, test and review as a pipeline within FLEET_CAP, with each fix
+   going to its own fresh seat. Avoid a full-fleet barrier unless dependencies need it. Anything that
    needs no finished build, like a talk track or a critic on the contract, starts at the
    same moment.
 
-3. ADVERSARIAL REVIEW + REAL TESTS ON EVERY CHUNK. As each chunk finishes it gets an
-   independent skeptic/adversarial review AND a real test, interleaved per chunk, NOT one
-   pass bolted on at the end.
+3. REVIEW BY WHAT THE CHUNK TOUCHES. A chunk that touches one of the gates the user set (money, a message to another person, a legal step, anything hard to undo) or a guard the user named gets a fresh skeptic told what the user is guarding against, a real test, and one fix round. A chunk that changes what the user sees or hears gets a real test and one real run. Plumbing (wording, cleanup, speed, logs) gets its own tests and nothing more. Interleave per chunk, never one pass bolted on at the end.
 
 4. TESTS ARE REAL, NEVER "MEANT TO PASS." Tests must exercise real behavior, be capable of
    FAILING, and assert against the actual artifact (the DB row, the file, the live state).
-   No trivially-green checks. Never mock away the thing under test. Confirm the real change
-   yourself; do not trust an exit code or an agent claiming success.
-   TEST LESS OFTEN, NEVER LESS: while building, run only what changed, in one browser. A chunk
-   gets one full relevant pass when done, and the final artifact gets one more. For browser
+   No trivially-green checks. Never mock away the thing under test. Read the saved test log yourself; never accept a bare claim or a bare exit code. Re-run a test only when no log exists or the log looks wrong. RUN WHAT THE CHANGE TOUCHES: one party runs the tests for the parts that changed, once, and saves the log. Everything runs once before the release the user will use. For browser
    work, cover the supported browsers and sizes within resource limits. For a CLI or hook,
    test real stdin/stdout/stderr and the supported shells rather than inventing a browser task.
    KEEP THE RIG: retain a reusable test rig, and a page shell when applicable, in the
@@ -174,9 +163,7 @@ COST GATE (announce this BEFORE you spawn anything):
    multi-vote adversarial verify, synthesis. NO SILENT CAPS: if you sample, cap, or skip
    retries, say so out loud.
 
-7. LOOP UNTIL GENUINELY COMPLETE. Keep orchestrating until every chunk is built, reviewed,
-   and tested (loop-until-dry on open-ended discovery work). If review or a test fails for
-   any chunk, fix and re-verify before moving on. Never hand back partial work as done.
+7. STOP WHEN THE ASK IS MET. Fix a finding now only if it touches a gate or a named guard AND ordinary use could hit it with nobody tampering. Every other finding goes on the ticket in one line. Say done the moment the thing the user asked for works, and say stuck the moment the work stops bringing it closer.
 
 8. AUTONOMY GATE. For an affirmative execution request, proceed with local work already
    authorized by the user: build/test/review/iterate within that task. STILL hard-stop for
