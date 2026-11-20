@@ -143,6 +143,36 @@ Exempt headlines, bullets, calls to action, captions, table cells, and quoted sp
 - Cut needless caveats such as `important to note`, `worth mentioning`, or `results may vary`. Keep qualifications that tell the reader a specific limit or condition.
 - Remove assistant residue on sight. Look for `as an AI`, `I hope this helps`, `great question`, `certainly` as an opening acknowledgment, `let me know if you would like`, and `here is a revised version`.
 
+## Own-words mode
+
+Use this mode when the author hands you their own rough words: a voice memo transcript, a brain dump, messages typed fast, or notes. Give the author's words back, tightened. In this mode you edit with scissors and you write nothing.
+
+You may:
+
+- Cut words and whole sentences.
+- Put the author's sentences in a better order.
+- Split one of the author's sentences, or join two of them, at a natural break.
+- Fix spelling and punctuation.
+- Spell out shorthand the author typed.
+
+You may not:
+
+- Write a new sentence, a bridge, a summary line or an ending.
+- Swap the author's word for a different word.
+- Smooth a rough sentence into a polished one.
+
+When two parts need a bridge, leave the gap open and tell the author which one it is.
+
+At most 5 of every 100 words in the piece may be words the author did not type. Check that with the script beside this file, and fix the piece until it passes:
+
+```
+python3 own_words_check.py RAW_FILE EDITED_FILE --cap 5
+```
+
+Items 10 and 11 of the checklist still apply as written in this mode. Every other item becomes a flag for the author, so report what you found and change nothing.
+
+Report the piece, the checker's output, each word you added, and each gap you left.
+
 ## Output Format
 
 ```

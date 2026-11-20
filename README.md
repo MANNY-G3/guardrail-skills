@@ -70,6 +70,19 @@ python3 skills/slop-scrub/slop_lint.py --json < draft.txt
 
 Exit status is `0` for a clean scan, `1` for findings, or `2` for bad input. Run the full checklist after the scan, since the linter cannot assess author voice or whether the claims are supported.
 
+### Own-words mode
+
+Give the skill your own rough words, such as a voice memo transcript, a brain dump or notes typed fast, and it edits with scissors. It cuts and reorders your sentences and fixes typos. It spells out shorthand, and it writes no new sentence, so the piece that comes back is made of sentences you wrote.
+
+`own_words_check.py` counts the words in the edited piece that you did not type, and it fails the piece when more than 5 in 100 are new.
+
+```sh
+python3 skills/slop-scrub/own_words_check.py raw.txt edited.txt
+python3 skills/slop-scrub/own_words_check.py raw.txt edited.txt --cap 10
+```
+
+Exit status is `0` at or under the cap, `1` over it, or `2` for bad input.
+
 **As a hook:** see [`examples/pre-commit-hook.sh`](examples/pre-commit-hook.sh) or [`examples/github-actions.yml`](examples/github-actions.yml) for how to force it to run on every commit or PR instead of waiting for the agent to remember.
 
 ---
