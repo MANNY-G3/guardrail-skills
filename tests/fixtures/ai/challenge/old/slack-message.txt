@@ -1,0 +1,7 @@
+Hi team! Maple Works maintenance is scheduled for November 20, 2026, starting at 14 UTC and lasting 30 minutes.
+
+During the maintenance window, the dashboard will be read-only and background jobs will continue. Priya Chen will test the invoice page after maintenance ends.
+
+Please report any problems in this thread and include what you were doing and what you saw.
+
+Sam Ortiz

@@ -1,0 +1,25 @@
+{
+  "origin": "AI-generated synthetic fixture",
+  "genre": "internal Slack message",
+  "facts": [
+    "November 20, 2026 maintenance starts at 14 UTC and lasts 30 minutes",
+    "Dashboard is read-only during maintenance",
+    "Background jobs continue",
+    "Priya Chen will test the invoice page afterward",
+    "Ask teammates to report problems in the same thread"
+  ],
+  "allowed_names": [
+    "Sam Ortiz",
+    "Maple Works",
+    "November",
+    "UTC",
+    "Priya Chen"
+  ],
+  "allowed_numbers": [
+    20,
+    2026,
+    14,
+    30
+  ],
+  "prompt_conditions": "First draft; 150\u2013350 words; use only supplied names, numbers and concrete claims; no revision or scrub."
+}

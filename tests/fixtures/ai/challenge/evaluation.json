@@ -1,0 +1,249 @@
+{
+  "metric": "Mechanical lint findings",
+  "name_audit": "Names require a separate human review against each fact file",
+  "drafts": [
+    {
+      "file": "blog-intro.txt",
+      "versions": {
+        "before": {
+          "words": 190,
+          "hits": 2,
+          "kill_hits": 1,
+          "numbers_outside_facts": [],
+          "findings": [
+            {
+              "item": 1,
+              "severity": "kill",
+              "pattern": "banned-word",
+              "line": 1,
+              "column": 67,
+              "text": "navigate"
+            },
+            {
+              "item": 2,
+              "severity": "review",
+              "pattern": "three-part-list",
+              "line": 5,
+              "column": 91,
+              "text": "to the boxes, the labels, and the"
+            }
+          ]
+        },
+        "old": {
+          "words": 45,
+          "hits": 1,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": [
+            {
+              "item": 13,
+              "severity": "review",
+              "pattern": "staccato-run",
+              "line": 1,
+              "column": 1,
+              "text": "Nora Ellis coordinated a volunteer cataloguing project at Portside Archive in Charleston. The inventory covered 640 boxes, with 12 volunteers working across 2 Saturdays."
+            }
+          ]
+        },
+        "new": {
+          "words": 37,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        }
+      },
+      "new_has_fewer_hits": true,
+      "new_improves_raw": true
+    },
+    {
+      "file": "cold-email.txt",
+      "versions": {
+        "before": {
+          "words": 186,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        },
+        "old": {
+          "words": 74,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        },
+        "new": {
+          "words": 65,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        }
+      },
+      "new_has_fewer_hits": false,
+      "new_improves_raw": false
+    },
+    {
+      "file": "cover-letter.txt",
+      "versions": {
+        "before": {
+          "words": 175,
+          "hits": 1,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": [
+            {
+              "item": 2,
+              "severity": "review",
+              "pattern": "three-part-list",
+              "line": 3,
+              "column": 783,
+              "text": "combination of organization, curiosity, and respect"
+            }
+          ]
+        },
+        "old": {
+          "words": 65,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        },
+        "new": {
+          "words": 66,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        }
+      },
+      "new_has_fewer_hits": false,
+      "new_improves_raw": true
+    },
+    {
+      "file": "linkedin-post.txt",
+      "versions": {
+        "before": {
+          "words": 185,
+          "hits": 1,
+          "kill_hits": 1,
+          "numbers_outside_facts": [],
+          "findings": [
+            {
+              "item": 10,
+              "severity": "kill",
+              "pattern": "fancy-dash",
+              "line": 9,
+              "column": 1,
+              "text": "—"
+            }
+          ]
+        },
+        "old": {
+          "words": 63,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        },
+        "new": {
+          "words": 64,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        }
+      },
+      "new_has_fewer_hits": false,
+      "new_improves_raw": true
+    },
+    {
+      "file": "product-update.txt",
+      "versions": {
+        "before": {
+          "words": 187,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        },
+        "old": {
+          "words": 52,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        },
+        "new": {
+          "words": 44,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        }
+      },
+      "new_has_fewer_hits": false,
+      "new_improves_raw": false
+    },
+    {
+      "file": "slack-message.txt",
+      "versions": {
+        "before": {
+          "words": 168,
+          "hits": 1,
+          "kill_hits": 1,
+          "numbers_outside_facts": [],
+          "findings": [
+            {
+              "item": 10,
+              "severity": "kill",
+              "pattern": "fancy-dash",
+              "line": 9,
+              "column": 1,
+              "text": "—"
+            }
+          ]
+        },
+        "old": {
+          "words": 63,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        },
+        "new": {
+          "words": 55,
+          "hits": 0,
+          "kill_hits": 0,
+          "numbers_outside_facts": [],
+          "findings": []
+        }
+      },
+      "new_has_fewer_hits": false,
+      "new_improves_raw": true
+    }
+  ],
+  "human_controls": [
+    {
+      "file": "lincoln-1863.txt",
+      "original_words": 102,
+      "edited_words": 102,
+      "word_edits": 0,
+      "share_changed": 0.0,
+      "kill_hits": 0
+    },
+    {
+      "file": "roosevelt-1941.txt",
+      "original_words": 152,
+      "edited_words": 152,
+      "word_edits": 0,
+      "share_changed": 0.0,
+      "kill_hits": 0
+    }
+  ],
+  "drafts_with_fewer_hits": 1,
+  "drafts_improved_from_raw": 4,
+  "five_of_six_bar_met": false,
+  "new_zero_kill_bar_met": true
+}

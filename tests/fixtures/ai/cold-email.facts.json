@@ -1,0 +1,11 @@
+{
+  "origin": "AI-generated synthetic fixture",
+  "genre": "cold email",
+  "facts": [
+    "The sender offers help organizing a shared project calendar.",
+    "The recipient works with a team.",
+    "The sender wants a conversation."
+  ],
+  "allowed_names": [],
+  "allowed_numbers": []
+}

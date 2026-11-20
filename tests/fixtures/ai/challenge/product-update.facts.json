@@ -1,0 +1,20 @@
+{
+  "origin": "AI-generated synthetic fixture",
+  "genre": "customer product update",
+  "facts": [
+    "Docknote now exports all project tasks to one CSV file",
+    "Export includes task owner and due date",
+    "Beta involved 41 teams",
+    "14 teams reported previously combining exports from separate projects",
+    "Comments and attachments are excluded"
+  ],
+  "allowed_names": [
+    "Docknote",
+    "CSV"
+  ],
+  "allowed_numbers": [
+    41,
+    14
+  ],
+  "prompt_conditions": "First draft; 150\u2013350 words; use only supplied names, numbers and concrete claims; no revision or scrub."
+}

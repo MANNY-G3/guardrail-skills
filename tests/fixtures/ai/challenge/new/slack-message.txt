@@ -1,0 +1,5 @@
+The Maple Works dashboard will be read-only for 30 minutes starting at 14 UTC on November 20, 2026. Background jobs will continue during maintenance, and Priya Chen will test the invoice page afterward.
+
+If you run into a problem, reply in this thread with what you were doing and what you saw.
+
+Sam Ortiz

@@ -28,9 +28,29 @@ The notes describe Nora Ellis coordinating 12 volunteers at Portside Archive in 
 
 The edit keeps every supplied name and number while cutting claims about care and collective effort that add no fact. It replaces general commentary with the work the team did. This README version has 39 words and 261 characters, with mechanical findings falling from 2 to zero. It restores the cataloguing-project context from the notes; the saved benchmark retains the independent editor's 37-word output. These counts describe the local lint, not a detector verdict. [Copy the after text](examples/slop-scrub-after.txt) or inspect the [saved comparison](tests/fixtures/ai/challenge/evaluation.json).
 
+### Example from a human author
+
+David S. Ferriero's October 12, 2012 post “Celebrating Our Volunteers” is in the public domain as a work of the United States government. [Original post](https://aotus.blogs.archives.gov/2012/10/12/celebrating-our-volunteers/) · [National Archives copyright policy](https://www.archives.gov/global-pages/privacy.html#copyright)
+
+**Before (human original)** · [Full original](examples/slop-scrub-human-before.txt)
+
+> This week we had an opportunity to honor volunteers who contributed more than 100 hours of their time to the National Archives this year in our Washington and College Park locations—295 volunteers who contributed 42,284 hours! These amazing numbers demonstrate their love of history and the work that we do.
+
+**After (current checklist)** · [Full edit](examples/slop-scrub-human-after.txt)
+
+> This week we honored volunteers at our Washington and College Park locations who each gave more than 100 hours to the National Archives this year. The 295 volunteers contributed 42,284 hours in all. We’re grateful for their love of history and for the time they gave to our work.
+
+The edit moves Ferriero's count of 295 volunteers and 42,284 hours into its own sentence and keeps his “we” and “our” as he thanks the volunteers. The editor worked from the passage without a separate voice sample.
+
 **The banned-word list is a starting point, not a ruling.** You'll disagree with parts of it, and you should. `leverage` and `robust` have honest uses. Open `skills/slop-scrub/SKILL.md`, edit the list in item 1, and make it yours. Forking it into something opinionated about *your* writing is the intended use, not a misuse.
 
-**As a skill:** copy `skills/slop-scrub/SKILL.md` into your tool's skills/instructions folder (for Claude Code: `~/.claude/skills/slop-scrub/`). In Claude Code it's then available as `/slop-scrub`. On any other AI tool, paste everything below the `---` frontmatter into your system prompt or custom instructions; it's self-contained.
+**Install as a skill**
+
+Copy the entire `skills/slop-scrub/` folder, including `slop_lint.py`.
+
+- **Claude Code.** For personal use, copy it to `~/.claude/skills/slop-scrub/` and run `/slop-scrub`. [Claude Code skills](https://code.claude.com/docs/en/skills)
+- **Codex.** Copy it to `~/.agents/skills/slop-scrub/` for personal use or to `.agents/skills/slop-scrub/` in the project. Invoke it with `$slop-scrub` or select it from `/skills`. [Codex skills](https://learn.chatgpt.com/docs/build-skills)
+- **Other tools.** Paste the text below the `---` frontmatter in `SKILL.md` into your system prompt or custom instructions.
 
 Put two or three short samples approved by the author in the root voice guide (`VOICE.md`) with a reader description and any words or phrases the author avoids. The strongest basis for the edit is the author's own wording, supported by their facts and approved samples. The checklist cannot guarantee a detector verdict. [Voice guide template](examples/VOICE.md.template)
 
@@ -59,7 +79,13 @@ Exit status is `0` for a clean scan, `1` for findings, or `2` for bad input. Run
 
 **Why it's useful:** code that reads clean, where every comment that survives is actually earning its place instead of restating what the code already says.
 
-**As a skill:** copy `skills/comment-scrub/` (both files) into your tool's skills folder. In Claude Code it's then available as `/comment-scrub`. On any other AI tool, paste the `SKILL.md` body into your instructions; pair it with `COMMENTS.md` if your tool supports a second reference file.
+**Install as a skill**
+
+Copy the entire `skills/comment-scrub/` folder so both `SKILL.md` and `COMMENTS.md` are available.
+
+- **Claude Code.** For personal use, copy it to `~/.claude/skills/comment-scrub/` and run `/comment-scrub`.
+- **Codex.** Copy it to `~/.agents/skills/comment-scrub/` for personal use or to `.agents/skills/comment-scrub/` in the project. Invoke it with `$comment-scrub` or select it from `/skills`.
+- **Other tools.** Paste the `SKILL.md` body into your instructions and include `COMMENTS.md` if your tool supports a second reference file.
 
 **As a hook:** same two examples as slop-scrub, this is the one you actually want on every commit. See [`examples/pre-commit-hook.sh`](examples/pre-commit-hook.sh).
 
