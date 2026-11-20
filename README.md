@@ -48,7 +48,9 @@ To preserve a project's writing voice, put two or three short, author-approved s
 
 A `UserPromptSubmit` hook for **Claude Code and Codex**. Both runtimes accept a JSON object with a `prompt` string on stdin and the `hookSpecificOutput.additionalContext` response below. The same script works in either tool; configuration and hook-trust steps differ.
 
-When you ask to "orchestrate a workflow," the hook supplies a recipe for a cost and clock estimate, a shared contract, independent review and real tests for each chunk. It calls for a 60-minute target, retained test rigs, and a comparison of agents planned with agents actually run before a stage is complete.
+The hook provides planning or execution instructions for the current job only. The time estimate tells the user how long the job is likely to take. Work continues within the user's authorization if the estimate runs over and ends when the requested result works. At each update and at completion, report how many turns you've used and how many seats you've started or resumed. Include tokens reread and minutes spent testing.
+
+Give each fix to a fresh agent with a brief describing the finding and the files it affects. Include the test to run. Ask for independent review when a chunk touches a safeguard the user named or involves money, legal steps, messages to others, or another action that's hard to undo. Exercise changes the user will see or hear. Run focused tests for each chunk, inspect the saved logs, and keep any reusable test rig. Compare the agents planned with the agents that ran before closing each stage.
 
 The recipe is model context. Agent limits and approval boundaries still depend on the agent following it and the runtime enforcing its permissions. This script neither launches agents nor intercepts pushes, deployments, or external writes. Keep your permission controls and spend-cap hooks enabled. Cloud model requests also use the network; a local workflow is not an offline workflow.
 
@@ -80,7 +82,7 @@ Preserve all other settings and hooks. If this command is already registered, up
         "hooks": [{
           "type": "command",
           "command": "bash \"${CODEX_HOME:-$HOME/.codex}/hooks/inject-orchestration-recipe.sh\"",
-          "additionalContextLimit": 5000
+          "additionalContextLimit": 8000
         }]
       }
     ]
@@ -88,7 +90,11 @@ Preserve all other settings and hooks. If this command is already registered, up
 }
 ```
 
-Preserve existing hooks, including spend controls. Codex also supports inline `[hooks]` configuration; use one representation per configuration layer to avoid duplicates. Validate `hooks.json` with `jq empty`, then open `/hooks` in the CLI or Settings > Hooks in the app to review and trust the new hook. Registration alone does not activate an untrusted hook. Do not edit stored trust hashes or use trust-bypass flags as an installation step. The bounded `additionalContextLimit` keeps this recipe together instead of relying on Codex's default spill threshold.
+Preserve existing hooks, including spend controls. Codex also supports inline `[hooks]` configuration; use one representation per configuration layer to avoid duplicates. Validate `hooks.json` with `jq empty`, then open `/hooks` in the CLI or Settings > Hooks in the app to review and trust the new hook. Registration alone does not activate an untrusted hook. Do not edit stored trust hashes or use trust-bypass flags as an installation step.
+
+Codex documents `additionalContextLimit` as an approximate token threshold with a default of 2,500 tokens. Set a positive integer for a limit or `0` for unlimited inline context. For output above the threshold, Codex saves the full output to disk and shows a preview. This example sets a conservative 8,000-token budget with room for recipe edits. [Codex hooks](https://learn.chatgpt.com/docs/hooks)
+
+The current execution and plan recipes measure 6,802 and 1,955 ASCII characters, respectively. The test deliberately applies the budget to characters as a stricter size check. Those counts cannot establish whether Codex would have saved the execution recipe to disk with the former 5,000-token setting.
 
 **Standing rules:** [examples/orchestration-rules.md](examples/orchestration-rules.md) contains the companion section. In Claude Code, append it to `~/.claude/CLAUDE.md`; in Codex, use `${CODEX_HOME:-$HOME/.codex}/AGENTS.md`. If the section exists, compare and merge it rather than appending a duplicate. Claude examples name Fable, Opus and Sonnet; Codex uses its available models and inherits the configured model unless an override is authorized. Stop and report missing required models instead of inventing names or changing account settings.
 
