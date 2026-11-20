@@ -8,7 +8,10 @@ Use the 14 checks to verify claims against their sources and find details the dr
 
 ### Example: an unedited AI draft
 
-A fresh AI writer produced this first draft from fictional project notes, without loading either checklist. The draft was frozen before the scrub runs. Both edits used the same notes, with no voice sample. [Raw draft and supplied facts](tests/fixtures/ai/challenge/blog-intro.facts.json)
+A fresh AI writer produced this first draft from fictional project notes, without loading either checklist. The draft was frozen before the scrub runs. Both edits used the same notes, with no voice sample.
+
+- [Raw draft](tests/fixtures/ai/challenge/blog-intro.txt)
+- [Supplied facts](tests/fixtures/ai/challenge/blog-intro.facts.json)
 
 The notes describe Nora Ellis coordinating 12 volunteers at Portside Archive in Charleston. They inventoried 640 boxes over 2 Saturdays, found 37 duplicate labels, spent 18 hours relabeling, and photographed every shelf.
 
