@@ -2,7 +2,7 @@
 """Count the words in an edited piece that the author did not type.
 
 Usage: own_words_check.py RAW EDITED [--cap 5]
-Exit 0 when the share of added words is at or under the cap, 1 when over, 2 on bad input.
+Exit 0 when the piece passes, 1 when it does not, 2 on bad input.
 """
 
 import argparse
@@ -12,6 +12,11 @@ import sys
 from pathlib import Path
 
 SHORTHAND = {"bc": "because", "idk": "i dont know", "u": "you", "ur": "your"}
+NEGATIONS = {
+    "not", "no", "never", "without", "nothing", "nobody", "none", "neither", "nor", "aint",
+    "dont", "cant", "wont", "didnt", "doesnt", "isnt", "arent", "wasnt", "werent",
+    "couldnt", "wouldnt", "shouldnt",
+}
 WORD = re.compile(r"[a-z0-9]+(?:'[a-z0-9]+)*")
 
 
@@ -41,11 +46,15 @@ def edit_distance(left, right):
 def same_word(edited, typed):
     if edited == typed:
         return True
+    # Numbers and negations carry the meaning, so a near miss there is a different word.
+    if any(character.isdigit() for character in edited + typed) or edited in NEGATIONS or typed in NEGATIONS:
+        return False
     # A fixed typo counts as the author's word; short words must match exactly.
     return min(len(edited), len(typed)) >= 4 and edit_distance(edited, typed) <= 2
 
 
-def unmatched(edited_words, source_words):
+def align(edited_words, source_words):
+    """Return the edited words with no match and the (edited, source) positions that matched."""
     # Order matters: cutting words from a sentence keeps the rest in the author's order.
     rows, cols = len(edited_words), len(source_words)
     longest = [[0] * (cols + 1) for _ in range(rows + 1)]
@@ -55,16 +64,17 @@ def unmatched(edited_words, source_words):
                 longest[i][j] = longest[i + 1][j + 1] + 1
             else:
                 longest[i][j] = max(longest[i + 1][j], longest[i][j + 1])
-    left_over, i, j = [], 0, 0
+    left_over, kept, i, j = [], [], 0, 0
     while i < rows and j < cols:
         if same_word(edited_words[i], source_words[j]):
+            kept.append((i, j))
             i, j = i + 1, j + 1
         elif longest[i + 1][j] >= longest[i][j + 1]:
             left_over.append(edited_words[i])
             i += 1
         else:
             j += 1
-    return left_over + edited_words[i:]
+    return left_over + edited_words[i:], kept
 
 
 def check(raw_text, edited_text):
@@ -72,14 +82,36 @@ def check(raw_text, edited_text):
     rows = []
     for sentence in sentences(edited_text):
         edited_words = words(sentence)
-        closest = sorted(sources, key=lambda source: len(unmatched(edited_words, source)))[:4]
-        left_over = unmatched(edited_words, closest[0]) if closest else edited_words
+        closest = sorted(sources, key=lambda source: len(align(edited_words, source)[0]))[:4]
+        source = closest[0] if closest else []
+        added, kept = align(edited_words, source)
         # A join of two of the author's sentences is allowed; a stray common word is not excused.
-        joins = [unmatched(edited_words, first + second) for first in closest for second in closest if first is not second]
-        best_join = min(joins, key=len, default=left_over)
-        if len(left_over) - len(best_join) >= 3:
-            left_over = best_join
-        rows.append((sentence, len(edited_words), left_over))
+        joins = [first + second for first in closest for second in closest if first is not second]
+        if joins:
+            best_join = min(joins, key=lambda joined: len(align(edited_words, joined)[0]))
+            join_added, join_kept = align(edited_words, best_join)
+            if len(added) - len(join_added) >= 3:
+                source, added, kept = best_join, join_added, join_kept
+        written_by_editor = len(added) * 2 >= len(edited_words)
+        if written_by_editor:
+            added = list(edited_words)
+        kept_positions = {position for _, position in kept}
+        lost_negations = []
+        if kept_positions and not written_by_editor:
+            # A negation cut from between words that were kept can reverse what the author said.
+            lost_negations = [
+                source[position]
+                for position in range(min(kept_positions), max(kept_positions) + 1)
+                if source[position] in NEGATIONS and position not in kept_positions
+            ]
+        rows.append({
+            "sentence": sentence,
+            "count": len(edited_words),
+            "added": added,
+            "written_by_editor": written_by_editor,
+            "lost_negations": lost_negations,
+            "respelled": [(source[j], edited_words[i]) for i, j in kept if source[j] != edited_words[i]],
+        })
     return rows
 
 
@@ -94,18 +126,34 @@ def main():
     except OSError as error:
         print(f"Could not read a file: {error}. Check both paths and run again.", file=sys.stderr)
         return 2
-    total = sum(count for _, count, _ in rows)
-    added = sum(len(left_over) for _, _, left_over in rows)
+    total = sum(row["count"] for row in rows)
     if not total:
         print("The edited file has no words in it. Give it the finished piece.", file=sys.stderr)
         return 2
-    for sentence, count, left_over in rows:
-        note = "all the author's words" if not left_over else "added: " + ", ".join(left_over)
-        print(f"{count:3d} words | {note} | {sentence[:70]}")
+    for row in rows:
+        notes = []
+        if row["written_by_editor"]:
+            notes.append("NEW SENTENCE, not the author's")
+        elif row["added"]:
+            notes.append("added: " + ", ".join(row["added"]))
+        if row["lost_negations"]:
+            notes.append("CUT A NEGATION (" + ", ".join(row["lost_negations"]) + "), check the meaning")
+        if row["respelled"]:
+            notes.append("spelling changed: " + ", ".join(f"{typed} to {edited}" for typed, edited in row["respelled"]))
+        summary = "; ".join(notes) or "all the author's words"
+        print(f"{row['count']:3d} words | {summary} | {row['sentence'][:70]}")
+    added = sum(len(row["added"]) for row in rows)
     share = 100 * added / total
-    verdict = "PASS" if share <= args.cap else "OVER THE CAP"
+    failures = []
+    if share > args.cap:
+        failures.append(f"over the cap of {args.cap:g} added words per 100")
+    if any(row["written_by_editor"] for row in rows):
+        failures.append("it holds a sentence the author did not write")
+    if any(row["lost_negations"] for row in rows):
+        failures.append("a negation was cut from inside a sentence")
+    verdict = "PASS" if not failures else "FAIL: " + "; ".join(failures)
     print(f"\n{total} words, {added} added by the editor, {share:.1f} per 100 (cap {args.cap:g}): {verdict}")
-    return 0 if share <= args.cap else 1
+    return 1 if failures else 0
 
 
 if __name__ == "__main__":

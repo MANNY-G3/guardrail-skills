@@ -15,7 +15,8 @@ SPEC.loader.exec_module(CHECK)
 RAW = (
     "so the bakery thing. we opened at 6 and the oven was already dead, like completly dead. "
     "i called dana bc she fixed it last time. she showed up in 20 minutes with a toolbox and a coffee. "
-    "turned out the breaker tripped. we sold 140 loaves anyway, which i still dont get."
+    "turned out the breaker tripped. we sold 140 loaves anyway, which i still dont get. "
+    "honestly i dont want a new oven or a loan from the bank this year."
 )
 SCISSORS_EDIT = (
     "We opened at 6 and the oven was already dead, completely dead. "
@@ -26,8 +27,12 @@ SCISSORS_EDIT = (
 WRITTEN_SENTENCE = "It was a morning that tested our resilience and reminded us why community matters."
 
 
+def rows_for(edited):
+    return CHECK.check(RAW, edited)
+
+
 def added_words(edited):
-    return [word for _, _, left_over in CHECK.check(RAW, edited) for word in left_over]
+    return [word for row in rows_for(edited) for word in row["added"]]
 
 
 class OwnWordsCheckTests(unittest.TestCase):
@@ -41,10 +46,19 @@ class OwnWordsCheckTests(unittest.TestCase):
     def test_a_swapped_word_is_counted(self):
         self.assertEqual(added_words("We opened at 6 and the oven was already broken."), ["broken"])
 
-    def test_a_written_sentence_is_counted(self):
-        added = added_words(SCISSORS_EDIT + " " + WRITTEN_SENTENCE)
-        self.assertGreaterEqual(len(added), 10)
-        self.assertIn("resilience", added)
+    def test_a_fixed_typo_is_listed_for_the_author(self):
+        rows = rows_for("The oven was already dead, completely dead.")
+        self.assertEqual(rows[0]["added"], [])
+        self.assertEqual(rows[0]["respelled"], [("completly", "completely")])
+
+    def test_a_changed_number_is_counted(self):
+        self.assertEqual(added_words("We sold 190 loaves anyway, which I still don't get."), ["190"])
+
+    def test_a_written_sentence_counts_in_full(self):
+        rows = rows_for(SCISSORS_EDIT + " " + WRITTEN_SENTENCE)
+        self.assertTrue(rows[-1]["written_by_editor"])
+        self.assertEqual(len(rows[-1]["added"]), rows[-1]["count"])
+        self.assertFalse(any(row["written_by_editor"] for row in rows[:-1]))
 
     def test_joining_two_of_the_authors_sentences_costs_only_the_joiner(self):
         joined = "I called Dana because she fixed it last time, and she showed up in 20 minutes with a toolbox and a coffee."
@@ -53,26 +67,50 @@ class OwnWordsCheckTests(unittest.TestCase):
     def test_a_stray_common_word_is_not_excused(self):
         self.assertEqual(added_words("Turned out the breaker tripped at the bakery."), ["at", "the", "bakery"])
 
-    def test_cli_exit_codes_and_cap(self):
+    def test_a_negation_cut_from_inside_a_sentence_is_caught(self):
+        reversed_meaning = rows_for("Honestly I want a new oven or a loan from the bank this year.")
+        self.assertEqual(reversed_meaning[0]["added"], [])
+        self.assertEqual(reversed_meaning[0]["lost_negations"], ["dont"])
+
+    def test_a_negation_in_a_clause_that_was_cut_whole_is_not_flagged(self):
+        kept_tail = rows_for("We sold 140 loaves anyway.")
+        self.assertEqual(kept_tail[0]["lost_negations"], [])
+
+    def test_cli_exit_codes_and_reasons(self):
         with tempfile.TemporaryDirectory(prefix="own-words-") as directory:
             raw_path = Path(directory) / "raw.txt"
-            good_path = Path(directory) / "good.txt"
-            padded_path = Path(directory) / "padded.txt"
             raw_path.write_text(RAW)
-            good_path.write_text(SCISSORS_EDIT)
-            padded_path.write_text(SCISSORS_EDIT + " " + WRITTEN_SENTENCE)
 
-            def run(*arguments):
-                return subprocess.run([sys.executable, str(CHECK_PATH), *arguments], capture_output=True, text=True)
+            def run(edited, *extra):
+                edited_path = Path(directory) / "edited.txt"
+                edited_path.write_text(edited)
+                return subprocess.run(
+                    [sys.executable, str(CHECK_PATH), str(raw_path), str(edited_path), *extra],
+                    capture_output=True, text=True,
+                )
 
-            good = run(str(raw_path), str(good_path))
+            good = run(SCISSORS_EDIT)
             self.assertEqual(good.returncode, 0, good.stdout + good.stderr)
             self.assertIn("PASS", good.stdout)
-            padded = run(str(raw_path), str(padded_path))
+
+            padded = run(SCISSORS_EDIT + " " + WRITTEN_SENTENCE)
             self.assertEqual(padded.returncode, 1)
-            self.assertIn("OVER THE CAP", padded.stdout)
-            self.assertEqual(run(str(raw_path), str(padded_path), "--cap", "40").returncode, 0)
-            missing = run(str(raw_path), str(Path(directory) / "missing.txt"))
+            self.assertIn("a sentence the author did not write", padded.stdout)
+            self.assertEqual(run(SCISSORS_EDIT + " " + WRITTEN_SENTENCE, "--cap", "90").returncode, 1)
+
+            swapped = run("We opened at 6 and the oven was already broken, totally and fully broken.")
+            self.assertEqual(swapped.returncode, 1)
+            self.assertIn("over the cap", swapped.stdout)
+            self.assertEqual(run("We opened at 6 and the oven was already broken.", "--cap", "20").returncode, 0)
+
+            reversed_meaning = run("Honestly I want a new oven or a loan from the bank this year.")
+            self.assertEqual(reversed_meaning.returncode, 1)
+            self.assertIn("CUT A NEGATION", reversed_meaning.stdout)
+
+            missing = subprocess.run(
+                [sys.executable, str(CHECK_PATH), str(raw_path), str(Path(directory) / "missing.txt")],
+                capture_output=True, text=True,
+            )
             self.assertEqual(missing.returncode, 2)
             self.assertIn("Could not read a file", missing.stderr)
 

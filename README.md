@@ -74,7 +74,7 @@ Exit status is `0` for a clean scan, `1` for findings, or `2` for bad input. Run
 
 Give the skill your own rough words, such as a voice memo transcript, a brain dump or notes typed fast, and it edits with scissors. It cuts and reorders your sentences and fixes typos. It spells out shorthand, and it writes no new sentence, so the piece that comes back is made of sentences you wrote.
 
-`own_words_check.py` counts the words in the edited piece that you did not type, and it fails the piece when more than 5 in 100 are new.
+`own_words_check.py` counts the words in the edited piece that you did not type, and it fails the piece when more than 5 in 100 are new. It also fails a piece that holds a sentence you did not write, or one where a "not" or a "never" was cut from inside your sentence. Changed numbers count as new words, and every spelling fix is listed so you can see a swapped word.
 
 ```sh
 python3 skills/slop-scrub/own_words_check.py raw.txt edited.txt

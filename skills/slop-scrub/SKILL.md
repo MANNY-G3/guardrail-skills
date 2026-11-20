@@ -160,10 +160,11 @@ You may not:
 - Write a new sentence, a bridge, a summary line or an ending.
 - Swap the author's word for a different word.
 - Smooth a rough sentence into a polished one.
+- Cut a "not", a "never" or a "no" out of a sentence you keep, or change a number.
 
 When two parts need a bridge, leave the gap open and tell the author which one it is.
 
-At most 5 of every 100 words in the piece may be words the author did not type. Check that with the script beside this file, and fix the piece until it passes:
+At most 5 of every 100 words in the piece may be words the author did not type. The script beside this file counts them. It also fails a piece that holds a sentence the author did not write or that drops a negation from inside a sentence, and it lists each spelling you changed. Run it and fix the piece until it passes:
 
 ```
 python3 own_words_check.py RAW_FILE EDITED_FILE --cap 5
