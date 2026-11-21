@@ -96,6 +96,19 @@ python3 skills/slop-scrub/anchor_check.py raw.txt piece.txt --cap 15
 
 Exit status is `0` at or under the cap, `1` over it, or `2` for bad input.
 
+### Sentence-bank mode
+
+Ask for a new piece on a new subject and point the skill at pieces you already wrote. It plans the new piece for its own subject and reader, then builds it out of your sentences, reworking each one with the fewest changed words that make it true. The new piece has its own shape, because the order your sentences came in does not matter.
+
+`bank_check.py` prints, for each sentence and for the whole piece, how many words in 100 sit inside runs of three or more words from your pieces. It fails a piece under 60.
+
+```sh
+python3 skills/slop-scrub/bank_check.py piece.txt my-post.txt my-other-post.txt
+python3 skills/slop-scrub/bank_check.py piece.txt VOICE.md --floor 70
+```
+
+Exit status is `0` at or over the floor, `1` under it, or `2` for bad input.
+
 **As a hook:** see [`examples/pre-commit-hook.sh`](examples/pre-commit-hook.sh) or [`examples/github-actions.yml`](examples/github-actions.yml) for how to force it to run on every commit or PR instead of waiting for the agent to remember.
 
 ---

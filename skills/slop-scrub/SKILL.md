@@ -199,6 +199,31 @@ Items 10 and 11 of the checklist apply as written in this mode. Every other item
 
 Report the piece, the counter's last line, each sentence you added, and each question for the author.
 
+## Sentence-bank mode
+
+Use this mode when the author asks for a new piece on a new subject and has given you finished pieces of their own: the samples in `VOICE.md`, or posts and emails they wrote. Treat those pieces as a bank of sentences. The new piece gets its own plan, and its sentences come from the bank.
+
+In the same November 2026 tests, new-subject pieces read as their author when they kept long runs of the author's own wording. The order of the sentences made no difference, so the new piece does not have to copy the shape of anything the author wrote. Pieces a model wrote in its own words never read as the author, in any style. Treat that as evidence about how the text reads and never as a promise about any detector.
+
+1. **Plan the new piece first, for its own subject and reader.** Decide what it opens on, what the middle says and where it stops. Do not start at the top of one of the author's pieces and walk down it.
+2. **For each thing the plan needs said, find a sentence of the author's that does that job:** a verdict, a dare, a price comparison, an aside to a second reader, a sign-off. Rework that sentence for the new subject.
+3. **Change the fewest words that make the sentence true of the new subject.** Swap the subject, the names, the numbers and the examples. Leave how the sentence opens, how it joins and how it ends.
+4. **One sentence of theirs makes one sentence of yours.** Do not join the front of one of their sentences to the back of another.
+5. **New facts come only from the author's notes for the new piece.** If the new subject cannot support a sentence, leave that sentence in the bank. Never bend a fact to fit a sentence.
+6. **When the bank has no sentence for something the piece must say, write it short and plain,** and keep such sentences few.
+7. **At least 60 of every 100 words sit inside runs of three or more words taken from the bank.**
+8. **Tell the author which pieces you drew on,** so two pieces built from the same sentences do not go out close together.
+
+The script beside this file measures the share, sentence by sentence and for the whole piece. Run it and revise until it passes:
+
+```
+python3 bank_check.py PIECE_FILE BANK_FILE [BANK_FILE ...]
+```
+
+Items 10 and 11 of the checklist apply as written in this mode. Every other item becomes a flag for the author on wording that came from their bank, so report what you found there and change nothing.
+
+Report the piece, the counter's last line, your plan in three lines, which of the author's sentences you used, and each question for the author.
+
 ## Output Format
 
 ```
