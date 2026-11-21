@@ -114,7 +114,7 @@ Exit status is `0` at or over the floor, `1` under it or when one piece supplies
 
 ### No sample yet
 
-With nothing you wrote to work from, the skill asks before it writes: say the piece in your own words, two minutes typed fast or dictated, and it builds the finished piece around that in anchor mode. If you would rather not, it writes plainly from your facts and tells you the result is in no one's voice. It never invents a voice for you, and it never uses one author's samples for another author.
+With nothing you wrote to work from, the skill asks before it writes: say the piece in your own words, two minutes typed fast or dictated, and it builds the finished piece around that in anchor mode. If you would rather not, it asks for two or three things that happened, a sentence each, and writes a plain piece around them: the first line says what the piece is, the events follow in plain past tense, and the always-true facts stay few. It tells you the result is in no one's voice. It never invents a voice for you, and it never uses one author's samples for another author.
 
 **As a hook:** see [`examples/pre-commit-hook.sh`](examples/pre-commit-hook.sh) or [`examples/github-actions.yml`](examples/github-actions.yml) for how to force it to run on every commit or PR instead of waiting for the agent to remember.
 

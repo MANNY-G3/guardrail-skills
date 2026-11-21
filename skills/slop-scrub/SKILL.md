@@ -246,12 +246,21 @@ Report the piece, the counter's last line, your plan in three lines, which of th
 
 Use this when the author wants a piece in their voice and you hold nothing they wrote, or when their writing does not cover the piece they are asking for.
 
-A model cannot supply a voice. In the same tests, pieces a model wrote from facts alone did not read as a person's writing: none in twelve different styles from two models, and none from two sets of written rules. The only exceptions came from scoring dozens of versions of one story against the detector, which a writer working alone cannot do. What read as the author, every time, was the author's own wording. So get some before you write.
+A model cannot supply a voice. In the same tests, pieces a model wrote from a list of facts did not read as a person's writing: none in twelve different styles from two models, and none from two sets of written rules. What read as the author, every time, was the author's own wording. So get some before you write. Failing that, get two or three things that happened (step 4).
 
-1. **Ask the author to say the piece to you in their own words.** Two or three minutes typed fast or dictated, about 200 words or more, unedited. For a longer piece, ask for about three quarters of the length they want. Rough is good, and extra gives you room to cut. If it helps, give them three plain questions fitted to the piece: what this is or what happened, why it matters to them, and what they want the reader to do. Ask above all for things that happened: who did what, with the numbers. In the tests a post built on a list of features did not read as a person's writing however it was worded, and three true events did more for it than any rewording.
+1. **Ask the author to say the piece to you in their own words.** Two or three minutes typed fast or dictated, about 200 words or more, unedited. For a longer piece, ask for about three quarters of the length they want. Rough is good, and extra gives you room to cut. If it helps, give them three plain questions fitted to the piece: what this is or what happened, why it matters to them, and what they want the reader to do. Ask above all for things that happened: who did what, with the numbers.
 2. **Count what they have already typed.** Their request, their notes and their earlier messages to you are their words. Ask before you use them, and leave out anything they would not want printed. If those already come to about 200 words on this subject, you can skip the ask.
 3. **Then use anchor mode** on what they gave you.
-4. **If they would rather not,** write the piece plainly from their facts, run the checklist, and tell them it is in no one's voice. Say what the piece is in its first line (an offer, a notice, a thank-you) and build it around that job. Tell anything that happened in plain past-tense sentences. Do not dress it up to sound like a person you invented, and do not borrow anyone else's samples.
+4. **If they would rather not say it themselves, ask for two or three things that happened and write a plain piece around them.** A sentence each is enough: who did what, with the numbers. In the tests a post built on a list of features did not read as a person's writing however it was worded. With three true events in the notes and the rules below, about half the pieces did, from writers who had nothing else to go on. That was one subject, and a second subject with made-up events did not get there, so promise the author nothing. The rules:
+   - The first line says what the piece is, in plain words: an offer, a notice, a thank-you, an apology.
+   - The things that happened come straight after it, each as a plain past-tense sentence with its numbers.
+   - Keep the always-true facts few (what it costs, where it is), and put each beside the event it belongs with.
+   - Use the same plain word for the same thing every time.
+   - Nobody performs: no jokes, asides, hooks or feelings the author did not supply.
+   - End on something that happened or on what the reader does. No lesson and no summing-up.
+   - Facts and events come only from the author. If they have no events to give, write it plainly from the facts and say what is missing.
+
+   Run the checklist, and tell the author the piece is in no one's voice. Do not dress it up to sound like a person you invented, and do not borrow anyone else's samples.
 5. **If they cannot answer right now,** send the ask anyway. If they need something in the meantime, send a plain draft from their facts with it, labeled as in no one's voice.
 6. **Offer to keep what they said** in a file of their own words, once they have looked it over, so the next piece can start from it.
 
