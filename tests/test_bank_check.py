@@ -73,12 +73,45 @@ class BankCheckTests(unittest.TestCase):
         self.assertEqual(empty_bank.returncode, 2)
         self.assertIn("too few words", empty_bank.stderr)
 
+    def test_an_abbreviation_or_a_number_does_not_split_a_sentence_or_a_word(self):
+        bank = "We reopen on Feb. 21st at 9 a.m. with 1,150 jars on the shelf."
+        result = self.run_check(bank + " The door is new.", [bank], "--floor", "10")
+        self.assertEqual(result.stdout.count("% author's |"), 2, result.stdout)
+        self.assertIn("18 words", result.stdout)
+
+    def test_a_one_word_sentence_of_the_authors_counts_as_theirs(self):
+        result = self.run_check(REWORKED + " Never again. Honestly.", [BANK_ONE + " Never again."])
+        self.assertIn("100% author's | Never again.", result.stdout)
+        self.assertIn("  0% author's | Honestly.", result.stdout)
+
+    def test_lines_carried_over_nearly_whole_are_listed(self):
+        result = self.run_check(REWORKED, [BANK_ONE])
+        self.assertIn("Carried over nearly whole (2)", result.stdout)
+        self.assertIn("  - I started keeping chickens", result.stdout)
+
+    def test_a_sentence_that_mixes_the_authors_wording_with_the_editors_is_listed(self):
+        mixed = "All it takes is a spreadsheet and three free evenings a month."
+        result = self.run_check(REWORKED + " " + mixed, [BANK_ONE])
+        self.assertIn("part the author's and part yours (1)", result.stdout)
+        self.assertIn("  - All it takes is a spreadsheet", result.stdout)
+
+    def test_several_bank_files_get_a_share_each_and_one_can_be_capped(self):
+        open_cap = self.run_check(REWORKED, [BANK_ONE, BANK_TWO])
+        self.assertEqual(open_cap.returncode, 0, open_cap.stdout)
+        self.assertIn("By bank file", open_cap.stdout)
+        self.assertIn("bank0.txt", open_cap.stdout)
+        capped = self.run_check(REWORKED, [BANK_ONE, BANK_TWO], "--most-from-one", "50")
+        self.assertEqual(capped.returncode, 1)
+        self.assertIn("bank0.txt supplies", capped.stdout)
+        self.assertIn("over the most allowed from one piece (50)", capped.stdout)
+
     def test_skill_and_readme_name_the_mode_and_the_counter(self):
         for name in ("skills/slop-scrub/SKILL.md", "README.md"):
             with self.subTest(name=name):
                 text = (REPO / name).read_text()
                 self.assertIn("Sentence-bank mode", text)
                 self.assertIn("bank_check.py", text)
+                self.assertIn("No sample yet", text)
 
 
 if __name__ == "__main__":

@@ -143,6 +143,19 @@ Exempt headlines, bullets, calls to action, captions, table cells, and quoted sp
 - Cut needless caveats such as `important to note`, `worth mentioning`, or `results may vary`. Keep qualifications that tell the reader a specific limit or condition.
 - Remove assistant residue on sight. Look for `as an AI`, `I hope this helps`, `great question`, `certainly` as an opening acknowledgment, `let me know if you would like`, and `here is a revised version`.
 
+## Writing in the author's voice
+
+The checklist above cleans a draft. The four sections below are for a piece that has to sound like its author. Pick by what the author gave you:
+
+| The author gave you | Use |
+|---|---|
+| Rough words of their own on this subject, to be tightened | Own-words mode |
+| Rough words of their own on this subject, for a finished piece | Anchor mode |
+| Finished pieces of their own, for a new version of a piece they have already written | Sentence-bank mode |
+| Nothing of their own, or writing that does not cover the piece they want | No sample yet |
+
+An author's words serve that author only. Never carry one author's samples, sentences or habits into another author's piece, and never fall back on a stock voice.
+
 ## Own-words mode
 
 Use this mode when the author hands you their own rough words: a voice memo transcript, a brain dump, messages typed fast, or notes. Give the author's words back, tightened. In this mode you edit with scissors and you write nothing.
@@ -201,28 +214,48 @@ Report the piece, the counter's last line, each sentence you added, and each que
 
 ## Sentence-bank mode
 
-Use this mode when the author asks for a new piece on a new subject and has given you finished pieces of their own: the samples in `VOICE.md`, or posts and emails they wrote. Treat those pieces as a bank of sentences. The new piece gets its own plan, and its sentences come from the bank.
+Use this mode when the author asks for a new piece and has given you finished pieces of their own: the samples in `VOICE.md`, or posts and emails they wrote. Treat those pieces as a bank of sentences. The new piece gets its own plan, and its sentences come from the bank.
 
-In the same November 2026 tests, new-subject pieces read as their author when they kept long runs of the author's own wording. The order of the sentences made no difference, so the new piece does not have to copy the shape of anything the author wrote. Pieces a model wrote in its own words never read as the author, in any style. Treat that as evidence about how the text reads and never as a promise about any detector.
+**This mode has a short reach, and you tell the author when you hit the end of it.** It works when the new piece is the same kind of piece as one in the bank and makes the same kind of points: one pitch reworked for a second product, last year's announcement reworked for this year's. What comes back is a new version of something they have written, and a reader who knows the original will hear it. In the same November 2026 tests, pieces that kept long runs of the author's own wording read as their author, in any sentence order. When the request moved further off (a calm how-to from a bank of rants, a moving notice from a bank of thank-you posts, even a report on a burst pipe from a post about a storm), careful editors could not reach the floor below without padding or dropping facts the reader needed, and every piece that fell short read as machine-written. Treat that as evidence about how the text reads and never as a promise about any detector.
 
 1. **Plan the new piece first, for its own subject and reader.** Decide what it opens on, what the middle says and where it stops. Do not start at the top of one of the author's pieces and walk down it.
-2. **For each thing the plan needs said, find a sentence of the author's that does that job:** a verdict, a dare, a price comparison, an aside to a second reader, a sign-off. Rework that sentence for the new subject.
+2. **For each thing the plan needs said, find a sentence of the author's that does that job:** a verdict, a price comparison, a thank-you, an aside to a second reader. Rework that sentence for the new subject.
 3. **Change the fewest words that make the sentence true of the new subject.** Swap the subject, the names, the numbers and the examples. Leave how the sentence opens, how it joins and how it ends.
-4. **One sentence of theirs makes one sentence of yours.** Do not join the front of one of their sentences to the back of another.
-5. **New facts come only from the author's notes for the new piece.** If the new subject cannot support a sentence, leave that sentence in the bank. Never bend a fact to fit a sentence.
+4. **Keep each of their sentences whole.** One sentence of theirs makes one sentence of yours. Do not join the front of one of their sentences to the back of another, and do not write a clause of your own into one of theirs. In the tests one piece read as machine-written with the editor's words written into the author's sentences, and as the author's once those words were moved into sentences of their own.
+5. **New facts come only from the author's notes for the new piece.** A fact that will not fit by swapping a word, a name or a number goes in a short plain sentence of its own. If the new subject cannot support a sentence, leave that sentence in the bank. Never bend a fact to fit a sentence.
 6. **When the bank has no sentence for something the piece must say, write it short and plain,** and keep such sentences few.
-7. **At least 60 of every 100 words sit inside runs of three or more words taken from the bank.**
-8. **Tell the author which pieces you drew on,** so two pieces built from the same sentences do not go out close together.
+7. **Leave the author's best-known lines in the bank.** A joke, a catchphrase, a dare, a sign-off, a story: any line a regular reader would recognize on seeing it twice. Build from their working sentences, the ones that state, explain, list, thank or connect. In the tests a piece that read as its author still did with its two best-known lines taken out.
+8. **Spread the borrowing when the bank allows it.** If several of the author's pieces can do the job, draw on several. If only one can, tell the author the new piece will read as a version of that one, and ask whether they have more writing of that kind.
+9. **At least 60 of every 100 words sit inside runs of three or more words taken from the bank.**
+10. **When the bank cannot carry the piece, stop and say so.** Read the bank before you plan. If it plainly holds no sentences for this kind of piece or this tone, stop there. If you cannot tell, build the piece once, honestly, and count. If the floor cannot be met without padding, bending a fact, or forcing in a sentence whose tone does not fit, do not force it and do not game the counter. Tell the author what their writing lacks for this piece (no sentences for instructions, nothing warm, nothing that announces news). Then offer the two ways on: they add a piece of their own of that kind to the bank, or they say this piece to you in their own words and you use anchor mode (see No sample yet). A draft that stopped here is your evidence and is not sent as the piece.
+11. **The counter measures borrowed wording and never tone.** If the author asked for a tone and the sentences that carry it are yours, tell them which ones.
+12. **Tell the author which pieces and which lines you drew on,** so two pieces built from the same sentences do not go out close together.
 
-The script beside this file measures the share, sentence by sentence and for the whole piece. Run it and revise until it passes:
+The script beside this file measures the share, sentence by sentence and for the whole piece. It also lists the lines carried over nearly whole, the sentences that are part the author's and part yours, and how much came from each bank file. Run it and revise until it passes, or until rule 10 applies:
 
 ```
 python3 bank_check.py PIECE_FILE BANK_FILE [BANK_FILE ...]
+python3 bank_check.py PIECE_FILE BANK_FILE [BANK_FILE ...] --most-from-one 40
 ```
 
-Items 10 and 11 of the checklist apply as written in this mode. Every other item becomes a flag for the author on wording that came from their bank, so report what you found there and change nothing.
+Items 10 and 11 of the checklist apply as written in this mode. Every other item becomes a flag for the author on wording that came from their bank, so report what you found there and change nothing. Run every item in full on sentences you wrote.
 
-Report the piece, the counter's last line, your plan in three lines, which of the author's sentences you used, and each question for the author.
+Report the piece, the counter's last line, your plan in three lines, which of the author's sentences you used, what the bank could not cover, and each question for the author.
+
+## No sample yet
+
+Use this when the author wants a piece in their voice and you hold nothing they wrote, or when their writing does not cover the piece they are asking for.
+
+A model cannot supply a voice. In the same tests, pieces a model wrote from facts alone never read as a person's writing, in twelve different styles from two different models. What read as the author was the author's own wording. So get some before you write.
+
+1. **Ask the author to say the piece to you in their own words.** Two or three minutes typed fast or dictated, about 200 words or more, unedited. For a longer piece, ask for about three quarters of the length they want. Rough is good, and extra gives you room to cut. If it helps, give them three plain questions fitted to the piece: what this is or what happened, why it matters to them, and what they want the reader to do.
+2. **Count what they have already typed.** Their request, their notes and their earlier messages to you are their words. Ask before you use them, and leave out anything they would not want printed. If those already come to about 200 words on this subject, you can skip the ask.
+3. **Then use anchor mode** on what they gave you.
+4. **If they would rather not,** write the piece plainly from their facts, run the checklist, and tell them it is in no one's voice. Do not dress it up to sound like a person you invented, and do not borrow anyone else's samples.
+5. **If they cannot answer right now,** send the ask anyway. If they need something in the meantime, send a plain draft from their facts with it, labeled as in no one's voice.
+6. **Offer to keep what they said** in a file of their own words, once they have looked it over, so the next piece can start from it.
+
+When the job ends in a question to the author, your report is that message: what you need from them, why, and the ways on. Run the checklist on it like any other text that leaves you.
 
 ## Output Format
 

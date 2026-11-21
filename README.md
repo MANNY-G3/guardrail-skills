@@ -98,16 +98,23 @@ Exit status is `0` at or under the cap, `1` over it, or `2` for bad input.
 
 ### Sentence-bank mode
 
-Ask for a new piece on a new subject and point the skill at pieces you already wrote. It plans the new piece for its own subject and reader, then builds it out of your sentences, reworking each one with the fewest changed words that make it true. The new piece has its own shape, because the order your sentences came in does not matter.
+Ask for a new piece and point the skill at pieces you already wrote. It plans the new piece for its own subject and reader, then builds it out of your sentences, each kept whole and reworked with the fewest changed words that make it true. It leaves your best-known lines alone and puts new facts in plain sentences of their own.
 
-`bank_check.py` prints, for each sentence and for the whole piece, how many words in 100 sit inside runs of three or more words from your pieces. It fails a piece under 60.
+This mode has a short reach. It gives you a new version of a piece you have already written: one pitch reworked for a second product, last year's announcement reworked for this year's. A reader who knows the original will hear it. Ask for a kind of piece or a tone your writing does not hold, such as a calm how-to when all it has are your rants, and the skill stops and tells you what is missing. It does not pad the piece to pass its own counter.
+
+`bank_check.py` prints, for each sentence and for the whole piece, how many words in 100 sit inside runs of three or more words from your pieces. It fails a piece under 60. It also lists the lines carried over nearly whole, the sentences that are part yours and part the editor's, and how much came from each of your pieces. The counter measures borrowed wording and never tone.
 
 ```sh
 python3 skills/slop-scrub/bank_check.py piece.txt my-post.txt my-other-post.txt
 python3 skills/slop-scrub/bank_check.py piece.txt VOICE.md --floor 70
+python3 skills/slop-scrub/bank_check.py piece.txt post-1.txt post-2.txt post-3.txt --most-from-one 40
 ```
 
-Exit status is `0` at or over the floor, `1` under it, or `2` for bad input.
+Exit status is `0` at or over the floor, `1` under it or when one piece supplies more than `--most-from-one` allows, or `2` for bad input.
+
+### No sample yet
+
+With nothing you wrote to work from, the skill asks before it writes: say the piece in your own words, two minutes typed fast or dictated, and it builds the finished piece around that in anchor mode. If you would rather not, it writes plainly from your facts and tells you the result is in no one's voice. It never invents a voice for you, and it never uses one author's samples for another author.
 
 **As a hook:** see [`examples/pre-commit-hook.sh`](examples/pre-commit-hook.sh) or [`examples/github-actions.yml`](examples/github-actions.yml) for how to force it to run on every commit or PR instead of waiting for the agent to remember.
 
