@@ -77,6 +77,23 @@ def align(edited_words, source_words):
     return left_over + edited_words[i:], kept
 
 
+def tightest_alignment(edited_words, source_words):
+    """Align twice, from the front and from the back, and keep the match that spans less of the source."""
+    # A kept tail clause can open with a word that also sits early in the author's sentence; matching from the back keeps that word from stretching the span.
+    added, kept = align(edited_words, source_words)
+    added_back, kept_back = align(edited_words[::-1], source_words[::-1])
+    last_edited, last_source = len(edited_words) - 1, len(source_words) - 1
+    kept_back = sorted((last_edited - i, last_source - j) for i, j in kept_back)
+
+    def span(pairs):
+        positions = [position for _, position in pairs]
+        return max(positions) - min(positions) if positions else 0
+
+    if span(kept_back) < span(kept):
+        return added_back[::-1], kept_back
+    return added, kept
+
+
 def check(raw_text, edited_text):
     sources = [words(sentence) for sentence in sentences(raw_text)]
     rows = []
@@ -92,6 +109,7 @@ def check(raw_text, edited_text):
             join_added, join_kept = align(edited_words, best_join)
             if len(added) - len(join_added) >= 3:
                 source, added, kept = best_join, join_added, join_kept
+        added, kept = tightest_alignment(edited_words, source)
         written_by_editor = len(added) * 2 >= len(edited_words)
         if written_by_editor:
             added = list(edited_words)

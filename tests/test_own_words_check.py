@@ -76,6 +76,17 @@ class OwnWordsCheckTests(unittest.TestCase):
         kept_tail = rows_for("We sold 140 loaves anyway.")
         self.assertEqual(kept_tail[0]["lost_negations"], [])
 
+    def test_a_kept_tail_clause_is_not_blamed_for_negations_in_the_part_cut_whole(self):
+        raw = (
+            "if you dont think you can bake, i dont know what to tell you, "
+            "so maybe you need to hear this: you can do all of this for 500 a year."
+        )
+        tail_only = CHECK.check(raw, "You can do all of this for 500 a year.")
+        self.assertEqual(tail_only[0]["added"], [])
+        self.assertEqual(tail_only[0]["lost_negations"], [])
+        reversed_meaning = CHECK.check(raw, "If you think you can bake, I know what to tell you.")
+        self.assertEqual(reversed_meaning[0]["lost_negations"], ["dont", "dont"])
+
     def test_cli_exit_codes_and_reasons(self):
         with tempfile.TemporaryDirectory(prefix="own-words-") as directory:
             raw_path = Path(directory) / "raw.txt"
