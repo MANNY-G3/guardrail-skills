@@ -78,13 +78,13 @@ class OwnWordsCheckTests(unittest.TestCase):
 
     def test_a_kept_tail_clause_is_not_blamed_for_negations_in_the_part_cut_whole(self):
         raw = (
-            "if you dont think you can bake, i dont know what to tell you, "
-            "so maybe you need to hear this: you can do all of this for 500 a year."
+            "if you dont prove the dough overnight, i dont see the point of baking it, "
+            "so here is the part people skip: you get the first batch out by 6."
         )
-        tail_only = CHECK.check(raw, "You can do all of this for 500 a year.")
+        tail_only = CHECK.check(raw, "You get the first batch out by 6.")
         self.assertEqual(tail_only[0]["added"], [])
         self.assertEqual(tail_only[0]["lost_negations"], [])
-        reversed_meaning = CHECK.check(raw, "If you think you can bake, I know what to tell you.")
+        reversed_meaning = CHECK.check(raw, "If you prove the dough overnight, I see the point of baking it.")
         self.assertEqual(reversed_meaning[0]["lost_negations"], ["dont", "dont"])
 
     def test_cli_exit_codes_and_reasons(self):

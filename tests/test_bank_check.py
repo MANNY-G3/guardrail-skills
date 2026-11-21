@@ -9,19 +9,19 @@ REPO = Path(__file__).resolve().parents[1]
 CHECK_PATH = REPO / "skills/slop-scrub/bank_check.py"
 
 BANK_ONE = (
-    "The bar for baking good bread at home has never been lower. "
-    "Everyone wants to tell you that it's hard, so you should buy their mixer. Nonsense. "
-    "The only things you need are a cast iron pot and a free afternoon."
+    "I started keeping bees the year my knees gave out on me. "
+    "Nobody warns you that a hive weighs as much as a small fridge, so plan on a second pair of hands. Fine by me. "
+    "All it takes is a smoker, a veil and a neighbor who owes you a favor."
 )
-BANK_TWO = "For the record, no shade to the bakery down the road, they earn their keep. That's literally it."
+BANK_TWO = "To be fair to the club down in Marlow, they lent me the extractor twice. And that was that."
 REWORKED = (
-    "The bar for fixing your own bike has never been lower. "
-    "Everyone wants to tell you that it's hard, so you should buy their stand. Nonsense. "
-    "The only things you need are a set of hex keys and a free afternoon."
+    "I started keeping chickens the year my knees gave out on me. "
+    "Nobody warns you that a coop weighs as much as a small fridge, so plan on a second pair of hands. Fine by me. "
+    "All it takes is a feeder, a fence and a neighbor who owes you a favor."
 )
 MODEL_WRITTEN = (
-    "Bicycle maintenance is more approachable than most riders assume. "
-    "With a modest toolkit and a little patience, routine repairs become a satisfying weekend habit."
+    "Backyard poultry is more approachable than most newcomers assume. "
+    "With a modest budget and a little patience, daily care becomes a satisfying morning habit."
 )
 
 
@@ -51,13 +51,13 @@ class BankCheckTests(unittest.TestCase):
         self.assertIn("under the floor of 60", result.stdout)
 
     def test_sentences_may_come_from_several_pieces_in_any_order(self):
-        shuffled = "That's literally it. The only things you need are a set of hex keys and a free afternoon. For the record, no shade to the shop down the road, they earn their keep."
+        shuffled = "And that was that. All it takes is a feeder, a fence and a neighbor who owes you a favor. To be fair to the club down in Dover, they lent me the extractor twice."
         result = self.run_check(shuffled, [BANK_ONE, BANK_TWO])
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_each_sentence_gets_its_own_share(self):
         result = self.run_check(REWORKED + " " + MODEL_WRITTEN.split(". ")[0] + ".", [BANK_ONE], "--floor", "40")
-        self.assertIn("  0% author's | Bicycle maintenance", result.stdout)
+        self.assertIn("  0% author's | Backyard poultry", result.stdout)
 
     def test_a_raised_floor_can_fail_a_piece_that_passed(self):
         self.assertEqual(self.run_check(REWORKED, [BANK_ONE], "--floor", "95").returncode, 1)
