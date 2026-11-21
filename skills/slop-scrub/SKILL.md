@@ -174,6 +174,31 @@ Items 10 and 11 of the checklist still apply as written in this mode. Every othe
 
 Report the piece, the checker's output, each word you added, and each gap you left.
 
+## Anchor mode
+
+Use this mode when the author gives you their own words and wants a finished piece back: a rant typed into the request, a voice memo transcript, rough notes, or a piece they already wrote that needs a new cut for a new reader. Their words are the body of the piece and you build around them.
+
+A piece that is mostly the author's own sentences reads as the author. A piece where you write the sentences does not, however you word it. In tests run in November 2026 against a commercial AI-writing detector, pieces that kept the author's words at 75 or more in every 100 read as human-written each time, pieces a model wrote in full never did, and pieces in between went either way. Treat that as evidence about how the text reads and never as a promise about any detector.
+
+1. **The author's sentences make up at least 75 of every 100 words.** Handle them as own-words mode does: cut, reorder, split, join, fix spelling and punctuation, spell out shorthand. Do not swap their word for yours or smooth a rough sentence.
+2. **What you add is plain and concrete.** A supplied fact, a number, a name, a step, or a short link between two of the author's points. Short sentences in everyday words.
+3. **Add no commentary.** No sentence that states the author's purpose, sums up, reflects or looks ahead. In the tests one such paragraph changed how a whole piece read, wherever it sat.
+4. **Keep the author's sentences together.** Leave their paragraphs whole. Put what you add in its own short paragraph, or as one short sentence at the end of one of theirs. Do not alternate one of theirs with one of yours.
+5. **Join with a word or a fact.** If two of the author's parts need a bridge, use `so`, `because`, `and`, or the fact that connects them. Never a pointing phrase such as "Here's why that matters".
+6. **Open and close on the author's sentences** whenever their words allow it.
+7. **Use only supplied facts.** If the piece needs a fact you do not have, leave it out and ask the author for it.
+8. **Never pad.** If the author's words cannot fill 75 of every 100, make the piece shorter or ask the author for more of their own words.
+
+The script beside this file counts the share. Run it and fix the piece until it passes:
+
+```
+python3 anchor_check.py RAW_FILE PIECE_FILE --cap 25
+```
+
+Items 10 and 11 of the checklist apply as written in this mode. Every other item becomes a flag for the author on their own sentences, so report what you found there and change nothing.
+
+Report the piece, the counter's last line, each sentence you added, and each question for the author.
+
 ## Output Format
 
 ```

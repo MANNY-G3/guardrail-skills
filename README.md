@@ -83,6 +83,19 @@ python3 skills/slop-scrub/own_words_check.py raw.txt edited.txt --cap 10
 
 Exit status is `0` at or under the cap, `1` over it, or `2` for bad input.
 
+### Anchor mode
+
+Give the skill your own words plus a few facts and ask for a finished piece, or give it a piece you already wrote and ask for a new cut for a different reader. Your sentences stay as the body, kept together in whole paragraphs. The skill may add up to 25 words in every 100, and only plain ones: a fact you supplied, a number, a name, a short link between two of your points. It adds no summing-up and no commentary.
+
+`anchor_check.py` prints which sentences are yours and which the editor added, and it fails the piece when the editor's share is over the cap or when a "not" or a "never" was cut from inside one of your sentences.
+
+```sh
+python3 skills/slop-scrub/anchor_check.py raw.txt piece.txt
+python3 skills/slop-scrub/anchor_check.py raw.txt piece.txt --cap 15
+```
+
+Exit status is `0` at or under the cap, `1` over it, or `2` for bad input.
+
 **As a hook:** see [`examples/pre-commit-hook.sh`](examples/pre-commit-hook.sh) or [`examples/github-actions.yml`](examples/github-actions.yml) for how to force it to run on every commit or PR instead of waiting for the agent to remember.
 
 ---
