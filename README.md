@@ -70,6 +70,16 @@ python3 skills/slop-scrub/slop_lint.py --json < draft.txt
 
 Exit status is `0` for a clean scan, `1` for findings, or `2` for bad input. Run the full checklist after the scan, since the linter cannot assess author voice or whether the claims are supported.
 
+### Writing in your voice: two ways in
+
+**Give it your writing. This is the way we recommend.** Send two or three finished pieces of yours and three to five things that happened, a sentence each. The skill writes a plain piece around what happened and lays your voice over it: your words, your joins, your way of opening and three of the habits a reader would know you by. In the last test, 24 fresh AI writers that saw only this skill wrote 24 pieces for two authors and three kinds of piece. All 24 scored human on one of the leading AI writing detectors, and three blind readers matched all 24 to the right author. The readers called 19 natural and 5 an impression. The pieces reused fewer than 9 of every 100 words from the samples. Details: [Carried-voice mode](#carried-voice-mode).
+
+**Give it no writing.** Send three to five things that happened. The skill writes a plain, clean piece around them and tells you it is in no one's voice. In a matching test, 23 of 24 of those pieces scored human on the same detector. From a bare list of facts with nothing that happened, none did, so there the skill asks you what happened before it writes. Details: [No sample yet](#no-sample-yet).
+
+Samples are worth the two minutes. Without them a piece reads like a person wrote it, and with them it reads like you wrote it. The author who gave one sample drew four of the five "impression" verdicts, so give two or three if you can.
+
+That was one week of testing, two authors, pieces of about 100 to 220 words and one detector. Treat the numbers as evidence about how the text reads and never as a promise about any detector's verdict.
+
 ### Own-words mode
 
 Give the skill your own rough words, such as a voice memo transcript, a brain dump or notes typed fast, and it edits with scissors. It cuts and reorders your sentences and fixes typos. It spells out shorthand, and it writes no new sentence, so the piece that comes back is made of sentences you wrote.
