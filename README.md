@@ -112,9 +112,19 @@ python3 skills/slop-scrub/bank_check.py piece.txt post-1.txt post-2.txt post-3.t
 
 Exit status is `0` at or over the floor, `1` under it or when one piece supplies more than `--most-from-one` allows, or `2` for bad input.
 
+### Carried-voice mode
+
+For a different kind of piece than anything in your samples: a how-to when your samples are rants, a notice when they are thank-you posts. The skill asks for three to five things that happened, writes the plain piece around them, then lays your voice on in layers taken from your samples: your words for things, your joins, your way of opening, the shape of your sentences and three of the habits a reader would know you by. It keeps at most one short verdict of yours whole, and it adds a line of opinion only where your samples show one. It never gives you an opinion you did not hold, and it leaves the facts alone. Give it two or three of your pieces if you can, because one sample leaves little to carry. The same counter then has to come out low, because the point is your voice and not your old sentences:
+
+```
+python3 skills/slop-scrub/bank_check.py PIECE.md SAMPLE.md --at-most 15
+```
+
+Only you can say whether the result sounds like you, so it tells you what it carried and asks you to read it.
+
 ### No sample yet
 
-With nothing you wrote to work from, the skill asks before it writes: say the piece in your own words, two minutes typed fast or dictated, and it builds the finished piece around that in anchor mode. If you would rather not, it asks for two or three things that happened, a sentence each, and writes a plain piece around them: the first line says what the piece is, the events follow in plain past tense, and the always-true facts stay few. It tells you the result is in no one's voice. It never invents a voice for you, and it never uses one author's samples for another author.
+With nothing you wrote to work from, the skill asks before it writes: say the piece in your own words, two minutes typed fast or dictated, and it builds the finished piece around that in anchor mode. If you would rather not, it asks for three to five things that happened, a sentence each, and writes a plain piece around them: the first line says what the piece is, the things that happened follow in plain past tense, and the always-true facts are rationed to one word in five. The piece can only be as long as the things that happened allow, so it tells you which facts it left out, that one more thing that happened makes room for more, and that the result is in no one's voice. It never makes up a thing that happened. It never invents a voice for you, and it never uses one author's samples for another author.
 
 **As a hook:** see [`examples/pre-commit-hook.sh`](examples/pre-commit-hook.sh) or [`examples/github-actions.yml`](examples/github-actions.yml) for how to force it to run on every commit or PR instead of waiting for the agent to remember.
 

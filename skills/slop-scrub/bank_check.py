@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Measure how much of a new piece is built from the author's own wording, for sentence-bank mode.
+"""Measure how much of a new piece is built from the author's own wording, for sentence-bank and carried-voice modes.
 
-Usage: bank_check.py PIECE BANK_FILE [BANK_FILE ...] [--floor 60] [--run 3] [--most-from-one N]
+Usage: bank_check.py PIECE BANK_FILE [BANK_FILE ...] [--floor 60] [--run 3] [--most-from-one N] [--at-most N]
 A word counts as the author's when it sits inside a run of RUN or more words found in a bank file.
 After the sentence table it lists the lines carried over nearly whole, the sentences that mix the
 author's wording with the editor's, and the share that comes from each bank file.
-Exit 0 when the share is at or over the floor, 1 when it is under (or one file is over --most-from-one), 2 on bad input.
+Sentence-bank mode wants the share high (--floor). Carried-voice mode wants it low (--at-most): that option
+replaces the floor and leaves out the list of mixed sentences, because there a mix is what the mode asks for.
+Exit 0 on a pass, 1 on a fail (under the floor, over --at-most, or one file over --most-from-one), 2 on bad input.
 """
 
 import argparse
@@ -76,6 +78,7 @@ def main():
     parser.add_argument("--floor", type=float, default=60.0, help="least share of the author's wording, per 100 words")
     parser.add_argument("--run", type=int, default=3, help="shortest run of words that counts as the author's")
     parser.add_argument("--most-from-one", type=float, default=None, help="most that any one bank file may supply, per 100 words")
+    parser.add_argument("--at-most", type=float, default=None, help="carried-voice mode: most of the piece that may be the author's wording, per 100 words")
     args = parser.parse_args()
     try:
         piece_text = args.piece.read_text()
@@ -118,7 +121,7 @@ def main():
         print(f"\nCarried over nearly whole ({len(nearly_whole)}). A reader who knows the author will recognize these, so do not reuse them soon:")
         for sentence in nearly_whole:
             print(f"  - {sentence[:100]}")
-    if mixed:
+    if mixed and args.at_most is None:
         print(f"\nSentences that are part the author's and part yours ({len(mixed)}). A swapped name or number is fine. A clause of yours written into their sentence is not: move it into a sentence of its own.")
         for sentence in mixed:
             print(f"  - {sentence[:100]}")
@@ -132,13 +135,19 @@ def main():
                 over_cap = (path.name, from_file)
 
     share = per_100(flags)
-    if share < args.floor:
+    if args.at_most is not None:
+        limit = f"at most {args.at_most:g}"
+        verdict = "PASS" if share <= args.at_most else f"FAIL: over the most allowed in carried-voice mode ({args.at_most:g})"
+    elif share < args.floor:
+        limit = f"floor {args.floor:g}"
         verdict = f"FAIL: under the floor of {args.floor:g}"
     elif over_cap:
+        limit = f"floor {args.floor:g}"
         verdict = f"FAIL: {over_cap[0]} supplies {over_cap[1]:.1f} per 100, over the most allowed from one piece ({args.most_from_one:g})"
     else:
+        limit = f"floor {args.floor:g}"
         verdict = "PASS"
-    print(f"\n{len(piece_words)} words, {share:.1f} per 100 inside runs of {args.run} or more from the bank (floor {args.floor:g}): {verdict}")
+    print(f"\n{len(piece_words)} words, {share:.1f} per 100 inside runs of {args.run} or more from the bank ({limit}): {verdict}")
     return 0 if verdict == "PASS" else 1
 
 

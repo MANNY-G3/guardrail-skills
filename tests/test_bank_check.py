@@ -113,6 +113,29 @@ class BankCheckTests(unittest.TestCase):
                 self.assertIn("bank_check.py", text)
                 self.assertIn("No sample yet", text)
 
+    def test_at_most_passes_a_piece_that_borrows_almost_nothing(self):
+        result = self.run_check(MODEL_WRITTEN, [BANK_ONE], "--at-most", "15")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("(at most 15): PASS", result.stdout)
+
+    def test_at_most_fails_a_piece_reworked_from_the_samples(self):
+        result = self.run_check(REWORKED, [BANK_ONE], "--at-most", "15")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("over the most allowed in carried-voice mode (15)", result.stdout)
+
+    def test_at_most_leaves_out_the_advice_on_mixed_sentences(self):
+        mixed = "All it takes is a spreadsheet and three free evenings a month."
+        result = self.run_check(MODEL_WRITTEN + " " + mixed, [BANK_ONE], "--at-most", "15")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertNotIn("part the author's and part yours", result.stdout)
+
+    def test_skill_and_readme_name_carried_voice_mode(self):
+        for name in ("skills/slop-scrub/SKILL.md", "README.md"):
+            with self.subTest(name=name):
+                text = (REPO / name).read_text()
+                self.assertIn("Carried-voice mode", text)
+                self.assertIn("--at-most 15", text)
+
 
 if __name__ == "__main__":
     unittest.main()
