@@ -105,8 +105,8 @@ class BankCheckTests(unittest.TestCase):
         self.assertIn("bank0.txt supplies", capped.stdout)
         self.assertIn("over the most allowed from one piece (50)", capped.stdout)
 
-    def test_skill_and_readme_name_the_mode_and_the_counter(self):
-        for name in ("skills/slop-scrub/SKILL.md", "README.md"):
+    def test_skill_and_guide_name_the_mode_and_the_counter(self):
+        for name in ("skills/slop-scrub/SKILL.md", "docs/slop-scrub.md"):
             with self.subTest(name=name):
                 text = (REPO / name).read_text()
                 self.assertIn("Sentence-bank mode", text)
@@ -129,8 +129,8 @@ class BankCheckTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertNotIn("part the author's and part yours", result.stdout)
 
-    def test_skill_and_readme_name_carried_voice_mode(self):
-        for name in ("skills/slop-scrub/SKILL.md", "README.md"):
+    def test_skill_and_guide_name_carried_voice_mode(self):
+        for name in ("skills/slop-scrub/SKILL.md", "docs/slop-scrub.md"):
             with self.subTest(name=name):
                 text = (REPO / name).read_text()
                 self.assertIn("Carried-voice mode", text)

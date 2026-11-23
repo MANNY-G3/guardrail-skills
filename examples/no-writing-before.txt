@@ -1,0 +1,11 @@
+One evening in November I checked my AI's drafts by hand, one at a time. Draft 14 came back marked 100% AI. So did draft 17. I didn't check the rest of the batch. I could see they were full of em dashes.
+
+The first draft that came back reading as mine was 113 words long. It was built from sentences I'd typed myself.
+
+That's the problem slop-scrub is for. It's a checklist for AI writing. I made it and I keep it up. It's free and open source on GitHub, so it costs $0 and anyone can change it.
+
+Here's how it works. Before a draft goes out, your AI assistant runs all 14 checks on it. It takes out em dashes and banned words like "delve." It flags any statistic that has no source.
+
+It can also read 2 or 3 pieces you really wrote, so the draft sounds like you. If you don't give it any, it won't make up a voice for you.
+
+If you're a founder who uses AI to help you write, you can get it today. Search for slop-scrub on GitHub.

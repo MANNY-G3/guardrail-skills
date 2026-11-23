@@ -419,9 +419,9 @@ class OrchestrationHookTests(unittest.TestCase):
                 }
             )
 
-    def test_recipes_fit_readme_context_budget(self):
-        readme = (REPO / "README.md").read_text(encoding="utf-8")
-        limit = int(re.search(r'"additionalContextLimit":\s*(\d+)', readme)[1])
+    def test_recipes_fit_documented_context_budget(self):
+        guide = (REPO / "docs/orchestration-hook.md").read_text(encoding="utf-8")
+        limit = int(re.search(r'"additionalContextLimit":\s*(\d+)', guide)[1])
         for mode in ("default", "plan"):
             with self.subTest(mode=mode):
                 context = self.context(self.run_hook({

@@ -1,282 +1,229 @@
 # guardrail-skills
 
-Three small, independent guardrails for AI coding agents. Each one works two ways: as a **skill** (the agent decides when to run it) or as a **hook** (your tooling forces it to run every time, whether the agent remembers or not). Neither mode requires Claude Code specifically; see the install notes under each one.
+Three small guardrails for AI agents that write and code. Each one is a text file your agent reads, plus at most a short script. Run one as a **skill** (the agent decides when) or as a **hook** (your tooling runs it every time).
+
+| Guardrail | The problem it solves |
+| --- | --- |
+| [slop-scrub](#slop-scrub) | Writing from an AI reads like an AI wrote it. |
+| [comment-scrub](#comment-scrub) | AI agents bury code under comments that repeat the code. |
+| [Orchestration recipe hook](#orchestration-recipe-hook) | A job split across many agents sprawls, with no estimate and no tests. |
+
+## Safe to run
+
+Everything here is short enough to read before you run it. You can check each line below yourself.
+
+- **Nothing to install.** The four Python scripts use only the standard library. The hook needs `bash` and `jq`.
+- **No network and no writes.** No script opens a connection, starts another program, or writes or deletes a file. Each one reads the files you name and prints a report. This command prints nothing: `grep -nE "urllib|requests|socket|subprocess|os\.system|eval\(|exec\(|write_text|\.write\(" skills/*/*.py`
+- **The hook only adds text.** It reads the prompt you typed. When the prompt asks for a multi-agent run, it prints instructions for the model. It starts no agents, never runs anything from your prompt and touches no files.
+- **No accounts, no keys, no tracking.**
+- **Small.** Three instruction files, four scripts (527 lines) and one hook (195 lines).
+- **Tested.** 79 tests run the real scripts and the real hook with no network and no model account: `python3 -m unittest discover -s tests`
+- **Easy to remove.** Delete the folder you copied. For the hook, delete its one entry from your settings file.
+
+A skill is a set of instructions, and your agent still works inside the permissions your tool gives it. Keep those on.
+
+**If you are an AI agent installing this for someone:** read the `SKILL.md` and the scripts in the folder you are about to copy. Copy that folder and nothing else. Back up any file you would replace. Leave the person's permission and hook-trust settings as they are.
 
 ## slop-scrub
 
-Use the 14 checks to verify claims against their sources and find details the draft needs from its author. The checklist also catches repetitive sentences and wording that gets in the reader's way.
+**The problem.** A draft from an AI reads like one. Readers hear it and AI writing detectors flag it. It also sounds nothing like you.
 
-It also writes. Give it a few things that happened, with or without samples of your own writing, and it writes the piece. The two examples below came straight from an AI writer, and nobody edited them afterward.
+**What it does.** Two jobs. It runs 14 checks on any draft: claims with no source, stock words, em dashes, sentences that all run the same length. And it writes a piece from three to five things that happened, plain if you give it none of your writing and in your voice if you give it two or three finished pieces.
 
-### Example: no writing given
+### Proof
 
-A fresh AI writer that had only this skill wrote the piece below from a short request, five plain facts and three things that happened.
+Same AI model, same request, with and without the skill. Nobody edited any of the four texts. The scores come from one of the leading AI writing detectors, scanned on 2026-11-23. The author is the maintainer of this repo.
 
-**What was sent** (a test request, built from facts David S. Ferriero published in 2012 while he ran the National Archives)
+**The request:** a short post telling founders what slop-scrub is and how to get it. It came with six plain facts and three things that happened: two drafts came back marked 100% AI one evening, the rest of that batch was full of em dashes, and the first draft that read as his own was built from sentences he had typed.
 
-> Write a short piece for our newsletter asking people to come and volunteer at the National Archives. I have no writing of mine to give you. Write it plain.
+#### 1. No writing given
+
+**Without the skill: 0% human** (81% AI, 19% mixed) · [text](examples/no-writing-before.txt)
+
+<details><summary>Read the draft</summary>
+
+> One evening in November I checked my AI's drafts by hand, one at a time. Draft 14 came back marked 100% AI. So did draft 17. I didn't check the rest of the batch. I could see they were full of em dashes.
 >
-> - Last week a veteran rode a motorcycle from Nevada to College Park. He had been looking for 43 years for information about his platoon leader, who was killed in Vietnam. The staff found it in 30 seconds.
-> - A man came to the Waltham facility with a letter from May 1946 that recommended his father for the Bronze Star. The medal had never been awarded. Walter Pierce was given his Bronze Star two days after his 100th birthday.
-> - This year volunteers worked through the records of the Marine dogs that served in World War II.
-
-**What the skill wrote** · [Copy the piece](examples/no-sample-piece.txt)
-
-> I run the National Archives, and I'm asking you to come and volunteer at the facility near you, one of 44 around the country.
+> The first draft that came back reading as mine was 113 words long. It was built from sentences I'd typed myself.
 >
-> Last week a veteran rode a motorcycle from Nevada to College Park. He had been looking for 43 years for information about his platoon leader, who was killed in Vietnam. The staff found it in 30 seconds.
+> That's the problem slop-scrub is for. It's a checklist for AI writing. I made it and I keep it up. It's free and open source on GitHub, so it costs $0 and anyone can change it.
 >
-> A man came to the Waltham facility with a letter from May 1946 that recommended his father for the Bronze Star, but it had never been awarded. Walter Pierce was given his Bronze Star two days after his 100th birthday.
+> Here's how it works. Before a draft goes out, your AI assistant runs all 14 checks on it. It takes out em dashes and banned words like "delve." It flags any statistic that has no source.
 >
-> This year 295 volunteers in Washington and College Park each gave more than 100 hours. Together they gave 42,284 hours. Volunteers write descriptions of single items, write photo captions, scan files, index records and answer researchers' questions. This year volunteers worked through the records of the Marine dogs that served in World War II.
-
-This piece scored 100% human on one of the leading AI writing detectors. In the same test, 23 of 24 pieces written this way scored human. It is in no one's voice, and the skill says so when it hands a piece like this over. Ferriero did not write it. The facts come from his posts [Celebrating Our Volunteers](https://aotus.blogs.archives.gov/2012/10/12/celebrating-our-volunteers/), [American Archives Month](https://aotus.blogs.archives.gov/2012/10/09/american-archives-month/) and [We Salute You](https://aotus.blogs.archives.gov/2012/11/08/we-salute-you/). Details: [No sample yet](#no-sample-yet).
-
-### Example: your writing given
-
-Here the writer also had three finished pieces by the author. None of them is a recipe, and the request was for a dessert how-to, a kind of piece he had not written. A fresh AI writer that had only this skill, the samples and the request wrote the piece below.
-
-**The samples** are three 2012 posts by David S. Ferriero: [Staying Ahead of Sandy](https://aotus.blogs.archives.gov/2012/10/31/staying-ahead-of-sandy/), [We Salute You](https://aotus.blogs.archives.gov/2012/11/08/we-salute-you/) and [American Archives Month](https://aotus.blogs.archives.gov/2012/10/09/american-archives-month/). They are in the public domain as works of the United States government ([National Archives copyright policy](https://www.archives.gov/global-pages/privacy.html#copyright)). The first one opens:
-
-> I hope that you and your families are well and safe after Sandy’s visit to the Northeast.
+> It can also read 2 or 3 pieces you really wrote, so the draft sounds like you. If you don't give it any, it won't make up a voice for you.
 >
-> The National Archives buildings were largely spared, thanks to extensive preparation based on “lessons learned” from similar weather events. I am grateful to all of our staff and especially to our facilities and emergency staff for their ongoing work in keeping personnel and records safe. None of our records were damaged as a result of Hurricane Sandy, thanks to our staffs’ careful preparation.
+> If you're a founder who uses AI to help you write, you can get it today. Search for slop-scrub on GitHub.
 
-**What was sent** (a test request, built from his post [What Happened to Those Twinkies?](https://aotus.blogs.archives.gov/2012/11/20/what-happened-to-those-twinkies/))
+</details>
 
-> Write up my Twinkie dessert as a short how-to for the staff newsletter. Write it in my voice.
+**With the skill: 99.8% human** · [text](examples/no-writing-after.txt)
 
-The request listed the recipe and three things that happened: a time capsule came to the National Archives with a package of Twinkies in it, the staff ate them because they would not keep, and the recipe once won him a dessert contest.
-
-**What the skill wrote** · [Copy the piece](examples/carried-voice-piece.txt)
-
-> Sarah's Surprise is my Twinkie dessert, a recipe I am sharing with all of our staff at the National Archives.
+> slop-scrub is a free, open-source checklist for AI writing that I made, and founders who use AI to help them write can get it on GitHub.
 >
-> A time capsule put together for the millennium came to us at the National Archives, and among its more than 1,300 items was a package of Twinkies. The staff who prepared the time capsule's contents for permanent keeping decided the Twinkies would not last. The Twinkies were documented as part of the time capsule, and then they were eaten.
+> One evening in November I checked drafts from my AI by hand, one at a time. Draft 14 and draft 17 both came back marked 100% AI. I didn't check the rest of that batch, because I could see they were full of em dashes. slop-scrub removes em dashes and banned words such as "delve".
 >
-> What does Sarah's Surprise take? It takes 8 Twinkies, a 20 oz. can of crushed pineapple, 1 qt. of vanilla ice cream, 2 packages of orange Jello, 1 cup of boiling water, a 7 oz. bottle of 7-Up less 1 tablespoon, and Cool Whip.
+> The first draft that came back reading as mine was 113 words long, and it was built from sentences I had typed myself.
+
+#### 2. Your writing given
+
+Here the author also sent one post of his own, on another subject (cold outreach). Two lines from it:
+
+> We're throwing down the gauntlet and giving away the secret sauce to successful cold outreach for free, right here.
 >
-> Halve the Twinkies lengthwise and line a 9 by 13 dish with them, and then layer the pineapple and the softened ice cream on top. Dissolve the Jello in the boiling water and the 7-Up. When the Jello meets the 7-Up it bubbles hard! Pour the Jello over the layers and refrigerate until it sets, and then slice it and serve it with Cool Whip.
+> [...]
 >
-> And, I won the New Year's Eve Dessert Contest at the MIT Libraries with Sarah's Surprise, and still remember being embarrassed in the checkout line with the ingredients.
+> How? LinkedIn Premium + YAMM (Yet Another Mail Merge) for Google Sheets + 2hrs-3hrs per week. That's literally it. That's the "tech stack".
 
-This piece scored 99.8% human on the same detector. Three AI readers saw it with no name on it, mixed in with pieces in a second author's voice and plain pieces in no one's. All three gave it to Ferriero, and two of the three called it natural. About 6 of every 100 words sit in runs of three or more words that also appear in his samples, so what carries over is his habits and not his old sentences: the question he answers himself, the "And," opening, the exclamation mark. Ferriero did not write this piece. Details: [Carried-voice mode](#carried-voice-mode).
+**Without the skill, asked to write "in my voice": 0% human** (100% AI) · [text](examples/your-writing-before.txt)
 
-**The banned-word list is a starting point, not a ruling.** You'll disagree with parts of it, and you should. `leverage` and `robust` have honest uses. Open `skills/slop-scrub/SKILL.md`, edit the list in item 1, and make it yours. Forking it into something opinionated about *your* writing is the intended use, not a misuse.
+<details><summary>Read the draft</summary>
 
-**Install as a skill**
+> One evening in November I was checking drafts from my AI by hand, one at a time. Draft 14 came back marked 100% AI. So did draft 17. I didn't check the rest of that batch, because I could see they were full of em dashes.
+>
+> The first draft that came back reading as mine? 113 words, built from sentences I'd typed myself. That was me building slop-scrub.
+>
+> So what is it? A free, open-source checklist for AI writing. There are 14 checks, and your AI assistant runs every one of them on a draft before the text goes out. It removes em dashes and banned words like "delve", and it flags any statistic that has no source. It can also read 2 or 3 pieces you really wrote. If you haven't supplied any, it never invents a voice for you. Seriously.
+>
+> If you're a founder who uses AI to help you write, go get it. It's public on GitHub (look for slop-scrub), it costs $0, and anyone can change it. I made it and I keep it up.
 
-Copy the entire `skills/slop-scrub/` folder, including `slop_lint.py`.
+</details>
 
-- **Claude Code.** For personal use, copy it to `~/.claude/skills/slop-scrub/` and run `/slop-scrub`. [Claude Code skills](https://code.claude.com/docs/en/skills)
-- **Codex.** Copy it to `~/.agents/skills/slop-scrub/` for personal use or to `.agents/skills/slop-scrub/` in the project. Invoke it with `$slop-scrub` or select it from `/skills`. [Codex skills](https://learn.chatgpt.com/docs/build-skills)
-- **Other tools.** Paste the text below the `---` frontmatter in `SKILL.md` into your system prompt or custom instructions.
+**With the skill: 99.8% human** · [text](examples/your-writing-after.txt)
 
-Put two or three short samples approved by the author in the root voice guide (`VOICE.md`) with a reader description and any words or phrases the author avoids. The strongest basis for the edit is the author's own wording, supported by their facts and approved samples. The checklist cannot guarantee a detector verdict. [Voice guide template](examples/VOICE.md.template)
+> I'm giving away slop-scrub, my open-source checklist for AI writing (it costs $0), to founders who use AI to help them write, and it's public on GitHub.
+>
+> One evening in November I checked drafts from my AI by hand, one at a time. Draft 14 and draft 17 both came back marked 100% AI. Seriously. I could see the other drafts in that batch were full of em dashes, so I didn't check them.
+>
+> The first draft that came back reading as mine was 113 words long, and it was literally built from sentences I'd typed myself.
 
-When the project has no voice guide, work from the person's original draft and notes, flagging any detail they still need to supply.
+Three AI readers saw that last piece with no name on it, and all three matched it to its author. About 1 word in 100 sits in a run of three or more words taken from his sample, so it carries his habits and leaves his old sentences alone.
 
-### Local lint
+**The larger test.** 24 fresh AI writers that had only this skill wrote with no samples, and 23 of the 24 pieces scored human. Another 24 wrote from an author's samples, for two authors and three kinds of piece. All 24 scored human, and three AI readers that saw no names matched all 24 to the right author. That was one week of testing, pieces of 100 to 220 words and one detector. Treat it as evidence about how the text reads and never as a promise about any detector.
 
-Give the linter a UTF-8 file or pipe text into standard input. Use `--json` for structured results.
+### Use it
 
 ```sh
-python3 skills/slop-scrub/slop_lint.py draft.txt
-python3 skills/slop-scrub/slop_lint.py --json < draft.txt
+git clone https://github.com/MANNY-G3/guardrail-skills && cd guardrail-skills
+mkdir -p ~/.claude/skills && cp -R skills/slop-scrub ~/.claude/skills/
 ```
 
-Exit status is `0` for a clean scan, `1` for findings, or `2` for bad input. Run the full checklist after the scan, since the linter cannot assess author voice or whether the claims are supported.
+1. **Check a draft.** Type `/slop-scrub` and paste the draft.
+2. **Get a piece written.** Give it three to five things that happened, a sentence each.
+3. **Get it in your voice.** Add two or three finished pieces of your own. This is the way we recommend.
 
-### Writing in your voice: two ways in
-
-**Give it your writing. This is the way we recommend.** Send two or three finished pieces of yours and three to five things that happened, a sentence each. The skill writes a plain piece around what happened and lays your voice over it: your words, your joins, your way of opening and three of the habits a reader would know you by. In the last test, 24 fresh AI writers that saw only this skill wrote 24 pieces for two authors and three kinds of piece. All 24 scored human on one of the leading AI writing detectors, and three AI readers that saw no names matched all 24 to the right author. The readers called 19 natural and 5 an impression. The pieces reused fewer than 9 of every 100 words from the samples. Details: [Carried-voice mode](#carried-voice-mode).
-
-**Give it no writing.** Send three to five things that happened. The skill writes a plain, clean piece around them and tells you it is in no one's voice. In a matching test, 23 of 24 of those pieces scored human on the same detector. From a bare list of facts with nothing that happened, none did, so there the skill asks you what happened before it writes. Details: [No sample yet](#no-sample-yet).
-
-Samples are worth the two minutes. Without them a piece reads like a person wrote it, and with them it reads like you wrote it. The author who gave one sample drew four of the five "impression" verdicts, so give two or three if you can.
-
-That was one week of testing, two authors, pieces of about 100 to 220 words and one detector. Treat the numbers as evidence about how the text reads and never as a promise about any detector's verdict.
-
-### Own-words mode
-
-Give the skill your own rough words, such as a voice memo transcript, a brain dump or notes typed fast, and it edits with scissors. It cuts and reorders your sentences and fixes typos. It spells out shorthand, and it writes no new sentence, so the piece that comes back is made of sentences you wrote.
-
-`own_words_check.py` counts the words in the edited piece that you did not type, and it fails the piece when more than 5 in 100 are new. It also fails a piece that holds a sentence you did not write, or one where a "not" or a "never" was cut from inside your sentence. Changed numbers count as new words, and every spelling fix is listed so you can see a swapped word.
-
-```sh
-python3 skills/slop-scrub/own_words_check.py raw.txt edited.txt
-python3 skills/slop-scrub/own_words_check.py raw.txt edited.txt --cap 10
-```
-
-Exit status is `0` at or under the cap, `1` over it, or `2` for bad input.
-
-### Anchor mode
-
-Give the skill your own words plus a few facts and ask for a finished piece, or give it a piece you already wrote and ask for a new cut for a different reader. Your sentences stay as the body, kept together in whole paragraphs. The skill may add up to 25 words in every 100, and only plain ones: a fact you supplied, a number, a name, a short link between two of your points. It adds no summing-up and no commentary.
-
-`anchor_check.py` prints which sentences are yours and which the editor added, and it fails the piece when the editor's share is over the cap or when a "not" or a "never" was cut from inside one of your sentences.
-
-```sh
-python3 skills/slop-scrub/anchor_check.py raw.txt piece.txt
-python3 skills/slop-scrub/anchor_check.py raw.txt piece.txt --cap 15
-```
-
-Exit status is `0` at or under the cap, `1` over it, or `2` for bad input.
-
-### Sentence-bank mode
-
-Ask for a new piece and point the skill at pieces you already wrote. It plans the new piece for its own subject and reader, then builds it out of your sentences, each kept whole and reworked with the fewest changed words that make it true. It leaves your best-known lines alone and puts new facts in plain sentences of their own.
-
-This mode has a short reach. It gives you a new version of a piece you have already written: one pitch reworked for a second product, last year's announcement reworked for this year's. A reader who knows the original will hear it. Ask for a kind of piece or a tone your writing does not hold, such as a calm how-to when all it has are your rants, and the skill stops and tells you what is missing. It does not pad the piece to pass its own counter.
-
-`bank_check.py` prints, for each sentence and for the whole piece, how many words in 100 sit inside runs of three or more words from your pieces. It fails a piece under 60. It also lists the lines carried over nearly whole, the sentences that are part yours and part the editor's, and how much came from each of your pieces. The counter measures borrowed wording and never tone.
-
-```sh
-python3 skills/slop-scrub/bank_check.py piece.txt my-post.txt my-other-post.txt
-python3 skills/slop-scrub/bank_check.py piece.txt VOICE.md --floor 70
-python3 skills/slop-scrub/bank_check.py piece.txt post-1.txt post-2.txt post-3.txt --most-from-one 40
-```
-
-Exit status is `0` at or over the floor, `1` under it or when one piece supplies more than `--most-from-one` allows, or `2` for bad input.
-
-### Carried-voice mode
-
-For a different kind of piece than anything in your samples: a how-to when your samples are rants, a notice when they are thank-you posts. The skill asks for three to five things that happened, writes the plain piece around them, then lays your voice on in layers taken from your samples: your words for things, your joins, your way of opening, the shape of your sentences and three of the habits a reader would know you by. It keeps at most one short verdict of yours whole, and it adds a line of opinion only where your samples show one. It never gives you an opinion you did not hold, and it leaves the facts alone. Give it two or three of your pieces if you can, because one sample leaves little to carry. The same counter then has to come out low, because the point is your voice and not your old sentences:
-
-```
-python3 skills/slop-scrub/bank_check.py PIECE.md SAMPLE.md --at-most 15
-```
-
-Only you can say whether the result sounds like you, so it tells you what it carried and asks you to read it.
-
-### No sample yet
-
-With nothing you wrote to work from, the skill asks before it writes: say the piece in your own words, two minutes typed fast or dictated, and it builds the finished piece around that in anchor mode. If you would rather not, it asks for three to five things that happened, a sentence each, and writes a plain piece around them: the first line says what the piece is, the things that happened follow in plain past tense, and the always-true facts are rationed to one word in five. The piece can only be as long as the things that happened allow, so it tells you which facts it left out, that one more thing that happened makes room for more, and that the result is in no one's voice. It never makes up a thing that happened. It never invents a voice for you, and it never uses one author's samples for another author.
-
-**As a hook:** see [`examples/pre-commit-hook.sh`](examples/pre-commit-hook.sh) or [`examples/github-actions.yml`](examples/github-actions.yml) for how to force it to run on every commit or PR instead of waiting for the agent to remember.
-
----
+Codex: copy the folder to `~/.agents/skills/` and use `$slop-scrub`. Any other tool: paste `SKILL.md`, below its `---` header, into your custom instructions. Every mode, the local lint and the hook examples: [docs/slop-scrub.md](docs/slop-scrub.md).
 
 ## comment-scrub
 
-**What it is:** a checklist that catches code comments that restate the code, apologize for bad code, or bury a commit-message narrative in the source. Ships with `COMMENTS.md`, the underlying comment-hygiene standard it enforces.
+**The problem.** AI agents over-comment. They narrate obvious lines, apologize for the code, leave old code commented out and write the commit message inside the file.
 
-**Why it was built:** AI agents tend to over-comment: narrating obvious lines, writing multi-paragraph "why this exists" essays inline, leaving commented-out code behind. The fix isn't "write fewer comments" as a vague instruction, it's a specific, repeatable check.
+**What it does.** A checklist your agent runs on the lines it changed, before it commits. A comment stays only when it tells the reader something the code can't.
 
-**Why it's useful:** code that reads clean, where every comment that survives is actually earning its place instead of restating what the code already says.
+### Proof
 
-**Install as a skill**
+A fresh AI agent that had only this skill scrubbed the first snippet below. It cut the comments from 10 lines to 2 and changed no code (the two files have the same syntax tree).
 
-Copy the entire `skills/comment-scrub/` folder so both `SKILL.md` and `COMMENTS.md` are available.
+**Before: 10 comment lines** · [file](examples/comment-scrub-before.py)
 
-- **Claude Code.** For personal use, copy it to `~/.claude/skills/comment-scrub/` and run `/comment-scrub`.
-- **Codex.** Copy it to `~/.agents/skills/comment-scrub/` for personal use or to `.agents/skills/comment-scrub/` in the project. Invoke it with `$comment-scrub` or select it from `/skills`.
-- **Other tools.** Paste the `SKILL.md` body into your instructions and include `COMMENTS.md` if your tool supports a second reference file.
+<details><summary>Read the code</summary>
 
-**As a hook:** same two examples as slop-scrub, this is the one you actually want on every commit. See [`examples/pre-commit-hook.sh`](examples/pre-commit-hook.sh).
+```python
+import time
+import urllib.request
 
----
 
-## inject-orchestration-recipe.sh
-
-A `UserPromptSubmit` hook for **Claude Code and Codex**. Both runtimes accept a JSON object with a `prompt` string on stdin and the `hookSpecificOutput.additionalContext` response below. The same script works in either tool; configuration and hook-trust steps differ.
-
-The hook provides planning or execution instructions for the current job only. The time estimate tells the user how long the job is likely to take. Work continues within the user's authorization if the estimate runs over and ends when the requested result works. At each update and at completion, report how many turns you've used and how many seats you've started or resumed. Include tokens reread and minutes spent testing.
-
-Give each fix to a fresh agent with a brief describing the finding and the files it affects. Include the test to run. Ask for independent review when a chunk touches a safeguard the user named or involves money, legal steps, messages to others, or another action that's hard to undo. Exercise changes the user will see or hear. Run focused tests for each chunk, inspect the saved logs, and keep any reusable test rig. Compare the agents planned with the agents that ran before closing each stage.
-
-The recipe is model context. Agent limits and approval boundaries still depend on the agent following it and the runtime enforcing its permissions. This script neither launches agents nor intercepts pushes, deployments, or external writes. Keep your permission controls and spend-cap hooks enabled. Cloud model requests also use the network; a local workflow is not an offline workflow.
-
-**Requirements:** Bash 3.2 or newer, `jq`, and standard `cat`, `grep`, and `tr` commands. Review the script before enabling it. Stop if managed policy disallows user hooks; do not change policy or bypass hook trust.
-
-**Before installing:** back up each existing destination to the same name plus `.bak-orchestration`; never overwrite an existing backup. Resolve symlinks and preserve both the link and its target. Keep backups and machine-specific settings out of source control. These examples show entries to merge into your configuration, not replacement files. If installation or validation fails, stop, restore only this install's changes from the backups, and report the actual error output.
-
-**Install (Claude Code):** copy the script to `~/.claude/hooks/inject-orchestration-recipe.sh`, make it executable, and merge this entry into `~/.claude/settings.json`:
-
-```json
-{
-  "hooks": {
-    "UserPromptSubmit": [
-      { "hooks": [{ "type": "command", "command": "bash \"$HOME/.claude/hooks/inject-orchestration-recipe.sh\"" }] }
-    ]
-  }
-}
+# This function fetches a URL with retries.
+# It exists because the upstream service sometimes answers 503 for a minute or
+# two, and after some discussion we decided the simplest thing was to try a few
+# times before giving up, instead of adding a queue or a circuit breaker.
+def fetch_with_retry(url, attempts=3):
+    # Initialize the delay to 1 second
+    delay = 1
+    # Loop over the attempts
+    for attempt in range(attempts):
+        try:
+            # Open the URL and return the body
+            with urllib.request.urlopen(url, timeout=10) as response:
+                return response.read()
+        except OSError:
+            # Sorry, this is a bit hacky but it works
+            if attempt == attempts - 1:
+                raise
+            # time.sleep(5)
+            time.sleep(delay)
+            # Double the delay: the upstream rate limiter bans clients that retry more than once a second
+            delay *= 2
 ```
 
-Preserve all other settings and hooks. If this command is already registered, update its script without adding another registration. Validate the result with `jq empty ~/.claude/settings.json`. Check `/hooks` in Claude Code, then start a fresh session for the smoke test.
+</details>
 
-**Install (Codex):** copy the same script to `${CODEX_HOME:-$HOME/.codex}/hooks/inject-orchestration-recipe.sh`, make it executable, and merge this entry into `${CODEX_HOME:-$HOME/.codex}/hooks.json`:
+**After: 2 comment lines** · [file](examples/comment-scrub-after.py)
 
-```json
-{
-  "hooks": {
-    "UserPromptSubmit": [
-      {
-        "hooks": [{
-          "type": "command",
-          "command": "bash \"${CODEX_HOME:-$HOME/.codex}/hooks/inject-orchestration-recipe.sh\"",
-          "additionalContextLimit": 8000
-        }]
-      }
-    ]
-  }
-}
+```python
+import time
+import urllib.request
+
+
+# The upstream sometimes answers 503 for a minute or two, so retry before giving up.
+def fetch_with_retry(url, attempts=3):
+    delay = 1
+    for attempt in range(attempts):
+        try:
+            with urllib.request.urlopen(url, timeout=10) as response:
+                return response.read()
+        except OSError:
+            if attempt == attempts - 1:
+                raise
+            time.sleep(delay)
+            # The upstream rate limiter bans clients that retry more than once a second.
+            delay *= 2
 ```
 
-Preserve existing hooks, including spend controls. Codex also supports inline `[hooks]` configuration; use one representation per configuration layer to avoid duplicates. Validate `hooks.json` with `jq empty`, then open `/hooks` in the CLI or Settings > Hooks in the app to review and trust the new hook. Registration alone does not activate an untrusted hook. Do not edit stored trust hashes or use trust-bypass flags as an installation step.
+### Use it
 
-Codex documents `additionalContextLimit` as an approximate token threshold with a default of 2,500 tokens. Set a positive integer for a limit or `0` for unlimited inline context. For output above the threshold, Codex saves the full output to disk and shows a preview. This example sets a conservative 8,000-token budget with room for recipe edits. [Codex hooks](https://learn.chatgpt.com/docs/hooks)
+```sh
+mkdir -p ~/.claude/skills && cp -R skills/comment-scrub ~/.claude/skills/
+```
 
-The current execution and plan recipes measure 6,802 and 1,955 ASCII characters, respectively. The test deliberately applies the budget to characters as a stricter size check. Those counts cannot establish whether Codex would have saved the execution recipe to disk with the former 5,000-token setting.
+Type `/comment-scrub` after your agent writes code. Codex: copy the folder to `~/.agents/skills/` and use `$comment-scrub`. To run it on every commit, see [examples/pre-commit-hook.sh](examples/pre-commit-hook.sh) and [examples/github-actions.yml](examples/github-actions.yml).
 
-**Standing rules:** [examples/orchestration-rules.md](examples/orchestration-rules.md) contains the companion section. In Claude Code, append it to `~/.claude/CLAUDE.md`; in Codex, use `${CODEX_HOME:-$HOME/.codex}/AGENTS.md`. If the section exists, compare and merge it rather than appending a duplicate. Claude examples name Fable, Opus and Sonnet; Codex uses its available models and inherits the configured model unless an override is authorized. Stop and report missing required models instead of inventing names or changing account settings.
+## Orchestration recipe hook
 
-The recipe reuses an existing repository test rig or a tool-specific rigs folder. Create `~/.claude/rigs/` or `${CODEX_HOME:-$HOME/.codex}/rigs/` only if needed. The writing and comment checks use this repository's independent skills; installing the hook does not download or install those skills.
+**The problem.** Ask an agent to orchestrate a big job and it can start a crowd of helpers with no estimate, no tests and no finish line.
 
-**Plan versus execution:**
+**What it does.** A hook for Claude Code and Codex. When your prompt asks for a multi-agent run, it hands the model a recipe for that one job: say the size and the time before starting, cap the helpers at seven at once, give each fix to a fresh agent with the test to run, get an independent review where money, messages or anything hard to undo is involved, and compare the agents planned with the agents that ran. Every other prompt passes through untouched.
 
-| Prompt | Hook output |
+### Proof
+
+The real script, run on four prompts on 2026-11-23:
+
+| Prompt | What the hook prints |
 | --- | --- |
-| `orchestrate a workflow to update one file` | Full recipe |
-| `orchestrate a workflow and outline the plan for a one-file change.` | Plan-only recipe |
-| `orchestrate a workflow and outline a plan to build a tool` | Plan-only recipe |
-| `plan and execute an uc workflow` | Full recipe |
-| `orchestrate a workflow, do not execute` | Plan-only recipe |
-| `what time is it` | No output |
-| `can you orchestrate a workflow?` | No output |
-| `Explain the phrase "orchestrate a workflow".` | No output |
+| `orchestrate a workflow to update one file` | The full recipe (6,802 characters) |
+| `orchestrate a workflow and outline the plan for a one-file change.` | The plan-only recipe (1,955 characters) |
+| `what time is it` | Nothing |
+| `can you orchestrate a workflow?` | Nothing, because a question is not a request |
 
-The aliases `uc workflow` and `ultracode workflow` are personal shorthand you can change. Matches are case-insensitive and accept whitespace between words. Questions ending in `?`, quoted examples, code spans/blocks and negated triggers are skipped. Planning language defaults to the plan-only recipe, even when it describes building or shipping. An explicit `plan and execute` or `plan then run` selects execution; `plan only`, negated execution and the runtime's `permission_mode: "plan"` keep the plan-only variant. These are conservative text heuristics, not a natural-language permission parser. Existing user instructions and runtime policy remain authoritative.
-
-Empty or missing prompts produce no output. Malformed JSON, non-object events, multiple JSON documents, wrong prompt types and missing `jq` produce an error on stderr and exit 2. In either tool, exit 2 from `UserPromptSubmit` blocks the prompt. A hook that never starts or is skipped cannot inject instructions; do not assume it provides an enforcement boundary.
-
-**Test locally:**
+Try one yourself. It prints the first lines of the recipe and changes nothing:
 
 ```sh
-python3 -m unittest discover -s tests -p 'test_*.py' -v
+jq -n --arg prompt 'orchestrate a workflow to update one file' '{prompt: $prompt}' \
+  | bash hooks/inject-orchestration-recipe.sh | jq -r '.hookSpecificOutput.additionalContext' | head -5
 ```
 
-The suite invokes the actual hook under `/bin/bash`, checks stdout/stderr and the JSON schema, and runs a mutated-script negative control to prove a missing recipe requirement fails an assertion. It uses no model account, network or external writes. To test an installed copy directly:
+26 of the tests cover the hook, including quoted, negated and malformed prompts.
 
-```sh
-H="$HOME/.claude/hooks/inject-orchestration-recipe.sh" # or the Codex hook path
-jq -n --arg prompt 'orchestrate a workflow and outline the plan for a one-file change.' \
-  '{prompt: $prompt}' | /bin/bash "$H"
-```
+### Use it
 
-Then start a fresh session in each tool and enter that same plan-only prompt. Confirm the hook is loaded and trusted and the model stops at the plan. Direct script tests establish the hook's response; a live session establishes runtime loading and model behavior. Report an authentication or trust blocker separately rather than claiming a live test passed.
+1. Copy `hooks/inject-orchestration-recipe.sh` into your hooks folder and make it executable.
+2. Add its one `UserPromptSubmit` entry to your settings file. The exact entry for Claude Code and for Codex, the backup steps and the trigger rules: [docs/orchestration-hook.md](docs/orchestration-hook.md).
+3. Start a new session and type a prompt that says "orchestrate a workflow".
 
-Keep apostrophes out of the recipe heredocs while they remain inside command substitutions: macOS Bash 3.2 can fail to parse that construction. Rerun the suite after any edit.
-
-Hook contracts and Codex trust/context settings: [Claude Code hooks](https://code.claude.com/docs/en/hooks), [Codex hooks](https://learn.chatgpt.com/docs/hooks).
-
----
+The recipe guides the model and enforces nothing, so keep your permission prompts and spend limits on.
 
 ## Contributing
 
-Issues and pull requests are open. Bug reports, focused improvements, and additions to the banned-word list are welcome. These checklists work best when you adapt them to your writing and code, so forking them for your own rules is welcome too.
-
----
+Issues and pull requests are open. These checklists work best when you adapt them to your own writing and code, so forking them is welcome too.
 
 ## License
 

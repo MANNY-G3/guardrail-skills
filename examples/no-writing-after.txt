@@ -1,0 +1,5 @@
+slop-scrub is a free, open-source checklist for AI writing that I made, and founders who use AI to help them write can get it on GitHub.
+
+One evening in November I checked drafts from my AI by hand, one at a time. Draft 14 and draft 17 both came back marked 100% AI. I didn't check the rest of that batch, because I could see they were full of em dashes. slop-scrub removes em dashes and banned words such as "delve".
+
+The first draft that came back reading as mine was 113 words long, and it was built from sentences I had typed myself.

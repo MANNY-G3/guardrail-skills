@@ -71,8 +71,8 @@ class AnchorCheckTests(unittest.TestCase):
         self.assertEqual(result.returncode, 2)
         self.assertIn("Could not read a file", result.stderr)
 
-    def test_skill_and_readme_name_the_mode_and_the_counter(self):
-        for name in ("skills/slop-scrub/SKILL.md", "README.md"):
+    def test_skill_and_guide_name_the_mode_and_the_counter(self):
+        for name in ("skills/slop-scrub/SKILL.md", "docs/slop-scrub.md"):
             with self.subTest(name=name):
                 text = (REPO / name).read_text()
                 self.assertIn("Anchor mode", text)

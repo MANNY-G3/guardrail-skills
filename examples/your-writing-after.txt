@@ -1,0 +1,5 @@
+I'm giving away slop-scrub, my open-source checklist for AI writing (it costs $0), to founders who use AI to help them write, and it's public on GitHub.
+
+One evening in November I checked drafts from my AI by hand, one at a time. Draft 14 and draft 17 both came back marked 100% AI. Seriously. I could see the other drafts in that batch were full of em dashes, so I didn't check them.
+
+The first draft that came back reading as mine was 113 words long, and it was literally built from sentences I'd typed myself.

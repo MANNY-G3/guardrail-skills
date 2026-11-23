@@ -48,17 +48,35 @@ class ScrubFixtureTests(unittest.TestCase):
             with self.subTest(before=before, after=after):
                 self.assertEqual(word_edits(before, after)["word_edits"], edits)
 
-    def test_readme_examples_match_the_saved_pieces(self):
+    def test_readme_examples_match_the_saved_texts(self):
         readme = (REPO / "README.md").read_text()
-        for heading, name in (("### Example: no writing given", "no-sample-piece.txt"),
-                              ("### Example: your writing given", "carried-voice-piece.txt")):
+        quotes, current = [], []
+        for line in readme.splitlines() + [""]:
+            if line.startswith(">"):
+                current.append(re.sub(r"^> ?", "", line))
+            elif current:
+                quotes.append("\n".join(current).strip())
+                current = []
+        for name in ("no-writing-before.txt", "no-writing-after.txt",
+                     "your-writing-before.txt", "your-writing-after.txt"):
             with self.subTest(name=name):
-                section = readme.split(heading, 1)[1]
-                excerpt = section.split("**What the skill wrote**", 1)[1].split("This piece scored", 1)[0]
-                body = "\n".join(re.sub(r"^> ?", "", line) for line in excerpt.splitlines()
-                                 if line.startswith(">"))
-                self.assertEqual(body.strip(), (REPO / "examples" / name).read_text().strip())
-                self.assertIn("(examples/" + name + ")", excerpt)
+                self.assertIn((REPO / "examples" / name).read_text().strip(), quotes)
+                self.assertIn("(examples/" + name + ")", readme)
+        for name in ("comment-scrub-before.py", "comment-scrub-after.py"):
+            with self.subTest(name=name):
+                code = (REPO / "examples" / name).read_text().strip()
+                self.assertIn("```python\n" + code + "\n```", readme)
+
+    def test_readme_keeps_problem_proof_use_and_stays_short(self):
+        readme = (REPO / "README.md").read_text()
+        self.assertLessEqual(len(readme.splitlines()), 250)
+        self.assertIn("## Safe to run", readme)
+        for heading in ("## slop-scrub", "## comment-scrub", "## Orchestration recipe hook"):
+            with self.subTest(heading=heading):
+                section = readme.split(heading + "\n", 1)[1].split("\n## ", 1)[0]
+                marks = [section.find(mark) for mark in ("**The problem.**", "### Proof", "### Use it")]
+                self.assertNotIn(-1, marks)
+                self.assertEqual(marks, sorted(marks))
 
 
 if __name__ == "__main__":
