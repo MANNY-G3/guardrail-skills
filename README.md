@@ -6,44 +6,61 @@ Three small, independent guardrails for AI coding agents. Each one works two way
 
 Use the 14 checks to verify claims against their sources and find details the draft needs from its author. The checklist also catches repetitive sentences and wording that gets in the reader's way.
 
-### Example: an unedited AI draft
+It also writes. Give it a few things that happened, with or without samples of your own writing, and it writes the piece. The two examples below came straight from an AI writer, and nobody edited them afterward.
 
-A fresh AI writer produced this first draft from fictional project notes, without loading either checklist. The draft was frozen before the scrub runs. Both edits used the same notes, with no voice sample.
+### Example: no writing given
 
-- [Raw draft](tests/fixtures/ai/challenge/blog-intro.txt)
-- [Supplied facts](tests/fixtures/ai/challenge/blog-intro.facts.json)
+A fresh AI writer that had only this skill wrote the piece below from a short request, five plain facts and three things that happened.
 
-The notes describe Nora Ellis coordinating 12 volunteers at Portside Archive in Charleston. They inventoried 640 boxes over 2 Saturdays, found 37 duplicate labels, spent 18 hours relabeling, and photographed every shelf.
+**What was sent** (a test request, built from facts David S. Ferriero published in 2012 while he ran the National Archives)
 
-**Before: unedited AI draft**
-
-> There is something satisfying about making a collection easier to navigate, especially when the work is shared. At Portside Archive in Charleston, Nora Ellis coordinated a volunteer cataloguing project that brought that idea into focus. The inventory covered 640 boxes, with 12 volunteers working across 2 Saturdays. Along the way, the team found 37 duplicate box labels, took 18 hours in total to relabel them, and photographed every shelf.
+> Write a short piece for our newsletter asking people to come and volunteer at the National Archives. I have no writing of mine to give you. Write it plain.
 >
-> Those details offer a vivid picture of the care behind an inventory. A label is a small thing, but it is also a point of reference for anyone trying to understand where a box belongs. Photographs add another way to see the shelves, while the time spent relabeling shows the patient attention involved in making the records clearer.
+> - Last week a veteran rode a motorcycle from Nevada to College Park. He had been looking for 43 years for information about his platoon leader, who was killed in Vietnam. The staff found it in 30 seconds.
+> - A man came to the Waltham facility with a letter from May 1946 that recommended his father for the Bronze Star. The medal had never been awarded. Walter Pierce was given his Bronze Star two days after his 100th birthday.
+> - This year volunteers worked through the records of the Marine dogs that served in World War II.
+
+**What the skill wrote** · [Copy the piece](examples/no-sample-piece.txt)
+
+> I run the National Archives, and I'm asking you to come and volunteer at the facility near you, one of 44 around the country.
 >
-> What stands out is the collective nature of the effort: volunteers giving their attention to the boxes, the labels, and the shelves as parts of the same project. It is an encouraging reminder that cataloguing is made up of tangible, deliberate actions. This project offers a chance to reflect on those actions and on the people who bring their care to the work.
-
-**After: the new checklist**
-
-> Volunteers found 37 duplicate box labels while inventorying 640 boxes at Portside Archive in Charleston. Relabeling took 18 hours in all.
+> Last week a veteran rode a motorcycle from Nevada to College Park. He had been looking for 43 years for information about his platoon leader, who was killed in Vietnam. The staff found it in 30 seconds.
 >
-> Nora Ellis coordinated the cataloguing project with 12 volunteers over 2 Saturdays, and the team photographed every shelf.
+> A man came to the Waltham facility with a letter from May 1946 that recommended his father for the Bronze Star, but it had never been awarded. Walter Pierce was given his Bronze Star two days after his 100th birthday.
+>
+> This year 295 volunteers in Washington and College Park each gave more than 100 hours. Together they gave 42,284 hours. Volunteers write descriptions of single items, write photo captions, scan files, index records and answer researchers' questions. This year volunteers worked through the records of the Marine dogs that served in World War II.
 
-The edit keeps every supplied name and number while cutting claims about care and collective effort that add no fact. It replaces general commentary with the work the team did. This README version has 39 words and 261 characters, with mechanical findings falling from 2 to zero. It restores the cataloguing-project context from the notes; the saved benchmark retains the independent editor's 37-word output. These counts describe the local lint, not a detector verdict. [Copy the after text](examples/slop-scrub-after.txt) or inspect the [saved comparison](tests/fixtures/ai/challenge/evaluation.json).
+This piece scored 100% human on one of the leading AI writing detectors. In the same test, 23 of 24 pieces written this way scored human. It is in no one's voice, and the skill says so when it hands a piece like this over. Ferriero did not write it. The facts come from his posts [Celebrating Our Volunteers](https://aotus.blogs.archives.gov/2012/10/12/celebrating-our-volunteers/), [American Archives Month](https://aotus.blogs.archives.gov/2012/10/09/american-archives-month/) and [We Salute You](https://aotus.blogs.archives.gov/2012/11/08/we-salute-you/). Details: [No sample yet](#no-sample-yet).
 
-### Example from a human author
+### Example: your writing given
 
-David S. Ferriero's October 12, 2012 post “Celebrating Our Volunteers” is in the public domain as a work of the United States government. [Original post](https://aotus.blogs.archives.gov/2012/10/12/celebrating-our-volunteers/) · [National Archives copyright policy](https://www.archives.gov/global-pages/privacy.html#copyright)
+Here the writer also had three finished pieces by the author. None of them is a recipe, and the request was for a dessert how-to, a kind of piece he had not written. A fresh AI writer that had only this skill, the samples and the request wrote the piece below.
 
-**Before (human original)** · [Full original](examples/slop-scrub-human-before.txt)
+**The samples** are three 2012 posts by David S. Ferriero: [Staying Ahead of Sandy](https://aotus.blogs.archives.gov/2012/10/31/staying-ahead-of-sandy/), [We Salute You](https://aotus.blogs.archives.gov/2012/11/08/we-salute-you/) and [American Archives Month](https://aotus.blogs.archives.gov/2012/10/09/american-archives-month/). They are in the public domain as works of the United States government ([National Archives copyright policy](https://www.archives.gov/global-pages/privacy.html#copyright)). The first one opens:
 
-> This week we had an opportunity to honor volunteers who contributed more than 100 hours of their time to the National Archives this year in our Washington and College Park locations—295 volunteers who contributed 42,284 hours! These amazing numbers demonstrate their love of history and the work that we do.
+> I hope that you and your families are well and safe after Sandy’s visit to the Northeast.
+>
+> The National Archives buildings were largely spared, thanks to extensive preparation based on “lessons learned” from similar weather events. I am grateful to all of our staff and especially to our facilities and emergency staff for their ongoing work in keeping personnel and records safe. None of our records were damaged as a result of Hurricane Sandy, thanks to our staffs’ careful preparation.
 
-**After (current checklist)** · [Full edit](examples/slop-scrub-human-after.txt)
+**What was sent** (a test request, built from his post [What Happened to Those Twinkies?](https://aotus.blogs.archives.gov/2012/11/20/what-happened-to-those-twinkies/))
 
-> This week we honored volunteers at our Washington and College Park locations who each gave more than 100 hours to the National Archives this year. The 295 volunteers contributed 42,284 hours in all. We’re grateful for their love of history and for the time they gave to our work.
+> Write up my Twinkie dessert as a short how-to for the staff newsletter. Write it in my voice.
 
-The edit moves Ferriero's count of 295 volunteers and 42,284 hours into its own sentence and keeps his “we” and “our” as he thanks the volunteers. The editor worked from the passage without a separate voice sample.
+The request listed the recipe and three things that happened: a time capsule came to the National Archives with a package of Twinkies in it, the staff ate them because they would not keep, and the recipe once won him a dessert contest.
+
+**What the skill wrote** · [Copy the piece](examples/carried-voice-piece.txt)
+
+> Sarah's Surprise is my Twinkie dessert, a recipe I am sharing with all of our staff at the National Archives.
+>
+> A time capsule put together for the millennium came to us at the National Archives, and among its more than 1,300 items was a package of Twinkies. The staff who prepared the time capsule's contents for permanent keeping decided the Twinkies would not last. The Twinkies were documented as part of the time capsule, and then they were eaten.
+>
+> What does Sarah's Surprise take? It takes 8 Twinkies, a 20 oz. can of crushed pineapple, 1 qt. of vanilla ice cream, 2 packages of orange Jello, 1 cup of boiling water, a 7 oz. bottle of 7-Up less 1 tablespoon, and Cool Whip.
+>
+> Halve the Twinkies lengthwise and line a 9 by 13 dish with them, and then layer the pineapple and the softened ice cream on top. Dissolve the Jello in the boiling water and the 7-Up. When the Jello meets the 7-Up it bubbles hard! Pour the Jello over the layers and refrigerate until it sets, and then slice it and serve it with Cool Whip.
+>
+> And, I won the New Year's Eve Dessert Contest at the MIT Libraries with Sarah's Surprise, and still remember being embarrassed in the checkout line with the ingredients.
+
+This piece scored 99.8% human on the same detector. Three AI readers saw it with no name on it, mixed in with pieces in a second author's voice and plain pieces in no one's. All three gave it to Ferriero, and two of the three called it natural. About 6 of every 100 words sit in runs of three or more words that also appear in his samples, so what carries over is his habits and not his old sentences: the question he answers himself, the "And," opening, the exclamation mark. Ferriero did not write this piece. Details: [Carried-voice mode](#carried-voice-mode).
 
 **The banned-word list is a starting point, not a ruling.** You'll disagree with parts of it, and you should. `leverage` and `robust` have honest uses. Open `skills/slop-scrub/SKILL.md`, edit the list in item 1, and make it yours. Forking it into something opinionated about *your* writing is the intended use, not a misuse.
 
@@ -72,7 +89,7 @@ Exit status is `0` for a clean scan, `1` for findings, or `2` for bad input. Run
 
 ### Writing in your voice: two ways in
 
-**Give it your writing. This is the way we recommend.** Send two or three finished pieces of yours and three to five things that happened, a sentence each. The skill writes a plain piece around what happened and lays your voice over it: your words, your joins, your way of opening and three of the habits a reader would know you by. In the last test, 24 fresh AI writers that saw only this skill wrote 24 pieces for two authors and three kinds of piece. All 24 scored human on one of the leading AI writing detectors, and three blind readers matched all 24 to the right author. The readers called 19 natural and 5 an impression. The pieces reused fewer than 9 of every 100 words from the samples. Details: [Carried-voice mode](#carried-voice-mode).
+**Give it your writing. This is the way we recommend.** Send two or three finished pieces of yours and three to five things that happened, a sentence each. The skill writes a plain piece around what happened and lays your voice over it: your words, your joins, your way of opening and three of the habits a reader would know you by. In the last test, 24 fresh AI writers that saw only this skill wrote 24 pieces for two authors and three kinds of piece. All 24 scored human on one of the leading AI writing detectors, and three AI readers that saw no names matched all 24 to the right author. The readers called 19 natural and 5 an impression. The pieces reused fewer than 9 of every 100 words from the samples. Details: [Carried-voice mode](#carried-voice-mode).
 
 **Give it no writing.** Send three to five things that happened. The skill writes a plain, clean piece around them and tells you it is in no one's voice. In a matching test, 23 of 24 of those pieces scored human on the same detector. From a bare list of facts with nothing that happened, none did, so there the skill asks you what happened before it writes. Details: [No sample yet](#no-sample-yet).
 

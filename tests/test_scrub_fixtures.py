@@ -48,30 +48,16 @@ class ScrubFixtureTests(unittest.TestCase):
             with self.subTest(before=before, after=after):
                 self.assertEqual(word_edits(before, after)["word_edits"], edits)
 
-    def test_readme_example_matches_saved_raw_and_scrubbed_bodies(self):
+    def test_readme_examples_match_the_saved_pieces(self):
         readme = (REPO / "README.md").read_text()
-        before = readme.split("**Before: unedited AI draft**", 1)[1].split("**After: the new checklist**", 1)[0]
-        after = readme.split("**After: the new checklist**", 1)[1].split("The edit keeps", 1)[0]
-        for excerpt, path in ((before, AI / "challenge/blog-intro.txt"),
-                              (after, REPO / "examples/slop-scrub-after.txt")):
-            with self.subTest(path=path):
-                body = "\n".join(re.sub(r"^> ?", "", line) for line in excerpt.splitlines()
-                                 if line.startswith(">"))
-                self.assertEqual(body.strip(), path.read_text().strip())
-                if path.name == "slop-scrub-after.txt":
-                    self.assertGreaterEqual(len(body.strip()), 250)
-
-    def test_readme_human_example_matches_saved_opening_paragraphs(self):
-        readme = (REPO / "README.md").read_text()
-        before = readme.split("**Before (human original)**", 1)[1].split("**After (current checklist)**", 1)[0]
-        after = readme.split("**After (current checklist)**", 1)[1].split("The edit moves", 1)[0]
-        for excerpt, name in ((before, "slop-scrub-human-before.txt"),
-                              (after, "slop-scrub-human-after.txt")):
+        for heading, name in (("### Example: no writing given", "no-sample-piece.txt"),
+                              ("### Example: your writing given", "carried-voice-piece.txt")):
             with self.subTest(name=name):
+                section = readme.split(heading, 1)[1]
+                excerpt = section.split("**What the skill wrote**", 1)[1].split("This piece scored", 1)[0]
                 body = "\n".join(re.sub(r"^> ?", "", line) for line in excerpt.splitlines()
                                  if line.startswith(">"))
-                saved = (REPO / "examples" / name).read_text().strip()
-                self.assertEqual(body.strip(), saved.split("\n\n", 1)[0])
+                self.assertEqual(body.strip(), (REPO / "examples" / name).read_text().strip())
                 self.assertIn("(examples/" + name + ")", excerpt)
 
 
