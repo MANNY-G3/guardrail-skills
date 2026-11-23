@@ -10,7 +10,7 @@ Give each fix to a fresh agent with a brief describing the finding and the files
 
 The recipe is model context. Agent limits and approval boundaries still depend on the agent following it and the runtime enforcing its permissions. This script neither launches agents nor intercepts pushes, deployments, or external writes. Keep your permission controls and spend-cap hooks enabled. Cloud model requests also use the network; a local workflow is not an offline workflow.
 
-**Requirements:** Bash 3.2 or newer, `jq`, and standard `cat`, `grep`, and `tr` commands. Review the script before enabling it. Stop if managed policy disallows user hooks; do not change policy or bypass hook trust.
+**Requirements:** Bash 3.2 or newer, `jq`, and standard `cat`, `grep`, and `tr` commands. Review the script before enabling it. Stop if managed policy disallows user hooks; do not change policy or skip hook trust.
 
 **Before installing:** back up each existing destination to the same name plus `.bak-orchestration`; never overwrite an existing backup. Resolve symlinks and preserve both the link and its target. Keep backups and machine-specific settings out of source control. These examples show entries to merge into your configuration, not replacement files. If installation or validation fails, stop, restore only this install's changes from the backups, and report the actual error output.
 
@@ -46,7 +46,7 @@ Preserve all other settings and hooks. If this command is already registered, up
 }
 ```
 
-Preserve existing hooks, including spend controls. Codex also supports inline `[hooks]` configuration; use one representation per configuration layer to avoid duplicates. Validate `hooks.json` with `jq empty`, then open `/hooks` in the CLI or Settings > Hooks in the app to review and trust the new hook. Registration alone does not activate an untrusted hook. Do not edit stored trust hashes or use trust-bypass flags as an installation step.
+Preserve existing hooks, including spend controls. Codex also supports inline `[hooks]` configuration; use one representation per configuration layer to avoid duplicates. Validate `hooks.json` with `jq empty`, then open `/hooks` in the CLI or Settings > Hooks in the app to review and trust the new hook. Registration alone does not activate an untrusted hook. Do not edit stored trust hashes or use flags that skip hook trust as an installation step.
 
 Codex documents `additionalContextLimit` as an approximate token threshold with a default of 2,500 tokens. Set a positive integer for a limit or `0` for unlimited inline context. For output above the threshold, Codex saves the full output to disk and shows a preview. This example sets a conservative 8,000-token budget with room for recipe edits. [Codex hooks](https://learn.chatgpt.com/docs/hooks)
 

@@ -35,7 +35,7 @@ if [[ "$comment_report" != CLEAN* ]]; then
   echo "$comment_report"
   echo
   echo "comment-scrub found issues. Fix them, then re-stage and commit again."
-  echo "(To bypass once: git commit --no-verify)"
+  echo "(To skip it once: git commit --no-verify)"
   exit 1
 fi
 
