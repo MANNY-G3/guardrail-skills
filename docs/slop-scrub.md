@@ -35,7 +35,7 @@ Exit status is `0` for a clean scan, `1` for findings, or `2` for bad input. Run
 
 Samples are worth the two minutes. Without them a piece reads like a person wrote it, and with them it reads like you wrote it. The author who gave one sample drew four of the five "impression" verdicts, so give two or three if you can.
 
-That was one week of testing, two authors, pieces of about 100 to 220 words and one detector. Treat the numbers as evidence about how the text reads and never as a promise about any detector's verdict.
+That was one day of scanning (41 rounds, about 500 scans), two authors, pieces of about 100 to 220 words and one detector. Treat the numbers as evidence about how the text reads and never as a promise about any detector's verdict.
 
 ### Own-words mode
 

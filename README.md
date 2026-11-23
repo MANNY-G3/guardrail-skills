@@ -98,7 +98,7 @@ Here the author also sent one post of his own, on another subject (cold outreach
 
 Three AI readers saw that last piece with no name on it, and all three matched it to its author. About 1 word in 100 sits in a run of three or more words taken from his sample, so it carries his habits and leaves his old sentences alone.
 
-**The larger test.** 24 fresh AI writers that had only this skill wrote with no samples, and 23 of the 24 pieces scored human. Another 24 wrote from an author's samples, for two authors and three kinds of piece. All 24 scored human, and three AI readers that saw no names matched all 24 to the right author. That was one week of testing, pieces of 100 to 220 words and one detector. Treat it as evidence about how the text reads and never as a promise about any detector.
+**The larger test.** 24 fresh AI writers that had only this skill wrote with no samples, and 23 of the 24 pieces scored human. Another 24 wrote from an author's samples, for two authors and three kinds of piece. All 24 scored human, and three AI readers that saw no names matched all 24 to the right author. That was one day of scanning (41 rounds, about 500 scans), pieces of 100 to 220 words and one detector. Treat it as evidence about how the text reads and never as a promise about any detector.
 
 ### Use it
 
