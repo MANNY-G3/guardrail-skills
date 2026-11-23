@@ -113,6 +113,8 @@ mkdir -p ~/.claude/skills && cp -R skills/slop-scrub ~/.claude/skills/
 
 Codex: copy the folder to `~/.agents/skills/` and use `$slop-scrub`. Any other tool: paste `SKILL.md`, below its `---` header, into your custom instructions. Every mode, the local lint and the hook examples: [docs/slop-scrub.md](docs/slop-scrub.md).
 
+**It won't work every time.** Results vary by model, request and detector, and no score is a promise. Try it on one draft first and read the result before you rely on it. If an install step fails, stop and delete what you copied.
+
 ## comment-scrub
 
 **The problem.** AI agents over-comment. They narrate obvious lines, apologize for the code, leave old code commented out and write the commit message inside the file.
@@ -187,6 +189,8 @@ mkdir -p ~/.claude/skills && cp -R skills/comment-scrub ~/.claude/skills/
 
 Type `/comment-scrub` after your agent writes code. Codex: copy the folder to `~/.agents/skills/` and use `$comment-scrub`. To run it on every commit, see [examples/pre-commit-hook.sh](examples/pre-commit-hook.sh) and [examples/github-actions.yml](examples/github-actions.yml).
 
+**It won't work every time.** It's a checklist your agent follows, so it can miss a comment or cut one you'd keep. Read the diff before you commit.
+
 ## Orchestration recipe hook
 
 **The problem.** Ask an agent to orchestrate a big job and it can start a crowd of helpers with no estimate, no tests and no finish line.
@@ -220,6 +224,8 @@ jq -n --arg prompt 'orchestrate a workflow to update one file' '{prompt: $prompt
 3. Start a new session and type a prompt that says "orchestrate a workflow".
 
 The recipe guides the model and enforces nothing, so keep your permission prompts and spend limits on.
+
+**It won't work every time, and multi-agent runs can use a lot of tokens.** You're responsible for your own usage. Try it on a small job first, and if an install step fails, stop and undo it.
 
 ## Contributing
 
