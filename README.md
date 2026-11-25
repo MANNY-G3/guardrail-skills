@@ -16,8 +16,8 @@ Everything here is short enough to read before you run it. You can check each li
 - **No network and no writes.** No script opens a connection, starts another program, or writes or deletes a file. Each one reads the files you name and prints a report. This command prints nothing: `grep -nE "urllib|requests|socket|subprocess|os\.system|eval\(|exec\(|write_text|\.write\(" skills/*/*.py`
 - **The hook only adds text.** It reads the prompt you typed. When the prompt asks for a multi-agent run, it prints instructions for the model. It starts no agents, never runs anything from your prompt and touches no files.
 - **No accounts, no keys, no tracking.**
-- **Small.** Three instruction files, four scripts (527 lines) and one hook (195 lines).
-- **Tested.** 79 tests run the real scripts and the real hook with no network and no model account: `python3 -m unittest discover -s tests`
+- **Small.** Three instruction files, four scripts (575 lines) and one hook (195 lines).
+- **Tested.** 80 tests run the real scripts and the real hook with no network and no model account: `python3 -m unittest discover -s tests`
 - **Easy to remove.** Delete the folder you copied. For the hook, delete its one entry from your settings file.
 
 A skill is a set of instructions, and your agent still works inside the permissions your tool gives it. Keep those on.

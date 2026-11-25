@@ -25,6 +25,25 @@ PATTERNS = (
     (14, "strong", "unneeded-caveat", r"\b(?:it\s+is\s+(?:important\s+to\s+note|worth\s+mentioning)|while\s+results\s+may\s+vary)\b"),
     (14, "kill", "assistant-residue", r"\b(?:as\s+an\s+AI\b|I\s+hope\s+this\s+helps\b|great\s+question\b|certainly\s*[,!:]|let\s+me\s+know\s+if\s+you\s+would\s+like\b|here\s+is\s+a\s+revised\s+version\b)"),
 )
+CLAUSE_JOINERS = re.compile(r"\b(?:and(?:\s+then)?|which|so|then)\b", FLAGS)
+PARTICIPIAL_TAIL = re.compile(
+    r",\s+(?:cutting|saving|reducing|increasing|growing|boosting|lowering|lifting|winning|"
+    r"recovering|covering|eliminating|preventing|driving|delivering|generating|ensuring|"
+    r"enabling|resulting\s+in)\s+[^.!?\n]{3,120}[.!?]",
+    FLAGS,
+)
+TRANSITION_OPENERS = (
+    re.compile(
+        r"^(?:Early\s+on|Next|Later|To\s+fix\s+that|After\s+that\s+change|In\s+that\s+role|"
+        r"Before\s+that|Outside\s+of\s+that|In\s+addition|Additionally|Furthermore|Moreover),",
+        FLAGS,
+    ),
+    re.compile(
+        r"^(?:(?:Using|Leveraging|Building|Working|Starting|Combining)|By\s+\w+ing)"
+        r"\s+[^,.\n]{3,60},\s+(?:I|we|they|she|he)\b",
+        FLAGS,
+    ),
+)
 
 
 def banned_words(skill=SKILL):
@@ -79,11 +98,27 @@ def lint(text, skill=SKILL):
             add(item, severity, name, *match.span())
 
     paragraphs = re.finditer(r"\S[^\n]*(?:\n(?!\s*\n)[^\n]*)*", text)
+    prev_tokens = None
     for paragraph in paragraphs:
         for block in re.split(r"\n(?=\s*(?:[-*+>]\s|\d+[.)]\s|#|\|))", paragraph.group()):
             if re.match(r"\s*(?:[-*+>]\s|\d+[.)]\s|#|\|)", block):
+                prev_tokens = None
                 continue
             offset = paragraph.start() + paragraph.group().find(block)
+            word_matches = list(WORD.finditer(block))
+            tokens = ["N" if m.group().isdigit() else m.group().lower().replace("’", "'")
+                      for m in word_matches]
+            if len(tokens) >= 6:
+                if prev_tokens is not None and tokens[:3] == prev_tokens[:3]:
+                    add(13, "review", "parallel-paragraph-opener",
+                        offset + word_matches[0].start(), offset + word_matches[2].end())
+                if (len(tokens) >= 8 and prev_tokens is not None and len(prev_tokens) >= 8
+                        and tokens[-3:] == prev_tokens[-3:]):
+                    add(13, "review", "parallel-paragraph-closer",
+                        offset + word_matches[-3].start(), offset + word_matches[-1].end())
+                prev_tokens = tokens
+            else:
+                prev_tokens = None
             spans = sentence_spans(block)
             lengths = [len(WORD.findall(sentence)) for _, _, sentence in spans]
             for index in range(len(spans) - 2):
@@ -101,7 +136,20 @@ def lint(text, skill=SKILL):
                 short_run.clear()
 
             for span, length in zip(spans, lengths):
-                sentence = span[2].strip()
+                raw = span[2]
+                lead = len(raw) - len(raw.lstrip())
+                sentence = raw.strip()
+                if length >= 35 and len(CLAUSE_JOINERS.findall(sentence)) >= 3:
+                    add(13, "review", "stacked-clause", offset + span[0] + lead, offset + span[1])
+                if tail := PARTICIPIAL_TAIL.search(raw):
+                    add(13, "review", "participial-tail",
+                        offset + span[0] + tail.start(), offset + span[0] + tail.end())
+                for pattern in TRANSITION_OPENERS:
+                    if opener := pattern.search(raw[lead:]):
+                        add(13, "review", "transition-opener",
+                            offset + span[0] + lead + opener.start(),
+                            offset + span[0] + lead + opener.end())
+                        break
                 if (length <= 12 and sentence.endswith(".") and not
                         re.search(r"\b(?:because|so|which|when|but|and)\b", sentence, FLAGS)):
                     short_run.append(span)

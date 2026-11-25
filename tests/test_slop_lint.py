@@ -102,6 +102,62 @@ class SlopLintTests(unittest.TestCase):
         ], ["I checked. The invoice had arrived after lunch, so I called the supplier to ask about the missing boxes. It took an hour.",
             "- I put the file here.\n- You left the book there.\n- We read the note together."])
 
+    def test_item_13_structural_checks(self):
+        self.assert_pattern("stacked-clause", [
+            "I reviewed the billing logs on Tuesday morning and pulled every duplicate line item "
+            "out of the monthly statement, which showed where the import script failed, so I fixed "
+            "the parser right away and then reprocessed the whole batch before noon.",
+        ], [
+            "I reviewed the billing logs on Tuesday morning and pulled every duplicate line item out.",
+            "Our regional branches tracked daily bread and butter inventory totals in a shared workbook "
+            "every afternoon from April through October and then checked the numbers on Friday morning "
+            "before anyone sent out the weekly summary.",
+            "- I reviewed the billing logs on Tuesday morning and pulled every duplicate line item "
+            "out of the monthly statement, which showed where the import script failed, so I fixed "
+            "the parser right away and then reprocessed the whole batch before noon.",
+        ])
+        self.assert_pattern("participial-tail", [
+            "I rebuilt the vendor intake queue last spring, cutting approval errors by 30%.",
+            "Our team updated the checkout page in May, covering the changes we shipped.",
+            "I cleaned up the invoice queue last quarter, cutting invoice errors across twelve branch offices by 30% and saving four hours a week.",
+        ], [
+            "I rebuilt the vendor intake queue last spring and cut approval errors by 30%.",
+            "- Rebuilt the vendor intake queue, cutting approval errors by 30%.",
+        ])
+        self.assert_pattern("transition-opener", [
+            "Early on, nobody checked the regional queue.",
+            "In addition, we updated the schedule on Thursday.",
+            "To fix that, we moved the nightly job to noon.",
+            "Using data to group accounts, I called the smaller branches first.",
+            "By grouping accounts by region, we cut setup time.",
+        ], [
+            "On Tuesday morning, nobody checked the regional queue.",
+            "By Tuesday, I finished the monthly close check.",
+            "By then, he left the branch office.",
+            "# Early on, nobody checked the queue.",
+        ])
+        self.assert_pattern("parallel-paragraph-opener", [
+            "From 2021 to 2024 at Acme I ran weekly billing checks for five branches.\n\n"
+            "From 2018 to 2021 at Northwind I handled regional onboarding across twelve stores.",
+            "I'm sure the weekly audit caught every duplicate line in April.\n\n"
+            "I’m sure the monthly billing export fixed the remaining totals in May.",
+            "Your posting asks for someone who has shipped billing integrations at scale.\n\n"
+            "Your posting asks for an operator who knows how finance teams close the books.",
+        ], [
+            "At Acme I ran weekly billing checks for five branches from 2021 to 2024.\n\n"
+            "Before that I handled regional onboarding across twelve stores at Northwind.",
+            "From 2021 to 2024 at Acme I ran weekly billing checks.\n\n"
+            "## Next section\n\n"
+            "From 2018 to 2021 at Northwind I handled regional onboarding.",
+        ])
+        self.assert_pattern("parallel-paragraph-closer", [
+            "In May our team migrated the legacy reporting jobs before the quarterly audit wrapped up last week.\n\n"
+            "In June another team rewrote the invoice export pipeline after the vendor integration wrapped up last week.",
+        ], [
+            "In May our team migrated the legacy reporting jobs before the quarterly audit.\n\n"
+            "In June another team rewrote the invoice export pipeline after the vendor release.",
+        ])
+
     def test_human_controls_have_no_kill_findings(self):
         controls = sorted((REPO / "tests/fixtures/human").glob("*.txt"))
         self.assertGreaterEqual(len(controls), 3)
