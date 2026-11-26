@@ -25,7 +25,7 @@ python3 skills/slop-scrub/slop_lint.py draft.txt
 python3 skills/slop-scrub/slop_lint.py --json < draft.txt
 ```
 
-Exit status is `0` for a clean scan, `1` for findings, or `2` for bad input. Run the full checklist after the scan, since the linter cannot assess author voice or whether the claims are supported.
+Exit status is `0` for a clean scan, `1` for findings, or `2` for bad input. Beyond banned words and em dashes, the linter flags stacked multi-clause sentences, participial summary tails, transition-opener scaffolding, and parallel paragraph openers or closers as review items. Run the full checklist after the scan, since the linter cannot assess author voice or whether the claims are supported.
 
 ### Writing in your voice: two ways in
 
@@ -91,6 +91,6 @@ Only you can say whether the result sounds like you, so it tells you what it car
 
 ### No sample yet
 
-With nothing you wrote to work from, the skill asks before it writes: say the piece in your own words, two minutes typed fast or dictated, and it builds the finished piece around that in anchor mode. If you would rather not, it asks for three to five things that happened, a sentence each, and writes a plain piece around them: the first line says what the piece is, the things that happened follow in plain past tense, and the always-true facts are rationed to one word in five. The piece can only be as long as the things that happened allow, so it tells you which facts it left out, that one more thing that happened makes room for more, and that the result is in no one's voice. It never makes up a thing that happened. It never invents a voice for you, and it never uses one author's samples for another author.
+With nothing you wrote to work from, the skill asks before it writes: say the piece in your own words, two minutes typed fast or dictated, and it builds the finished piece around that in anchor mode. For persuasive business pieces such as cover letters, cold outreach emails, executive memos, or thought-leadership threads, that short spoken dump is the default first step before drafting. If you would rather not, it asks for three to five things that happened, a sentence each, and writes a plain piece around them: the first line says what the piece is, the things that happened follow in plain past tense, and the always-true facts are rationed to one word in five. The piece can only be as long as the things that happened allow, so it tells you which facts it left out, that one more thing that happened makes room for more, and that the result is in no one's voice. It never makes up a thing that happened. It never invents a voice for you, and it never uses one author's samples for another author.
 
 **As a hook:** see [`examples/pre-commit-hook.sh`](../examples/pre-commit-hook.sh) or [`examples/github-actions.yml`](../examples/github-actions.yml) for how to force it to run on every commit or PR instead of waiting for the agent to remember.
