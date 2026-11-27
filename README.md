@@ -10,8 +10,8 @@ Three small guardrails for AI agents that write and code. Each one is a text fil
 
 ## Safe to run
 
-- **Zero dependencies, local only:** four Python standard-library scripts (575 lines), one `bash`/`jq` hook (195 lines), and three instruction files. No network calls, file writes, accounts, or keys.
-- **Tested offline:** 80 tests cover the scripts and hook (`python3 -m unittest discover -s tests`).
+- **Zero dependencies, local only:** four Python standard-library scripts (575 lines), one `bash`/`jq` hook (203 lines), and three instruction files. No network calls, file writes, accounts, or keys.
+- **Tested offline:** 82 tests cover the scripts and hook (`python3 -m unittest discover -s tests`).
 
 ## slop-scrub
 
@@ -200,12 +200,12 @@ Type `/comment-scrub` after your agent writes code. Codex: copy the folder to `~
 
 ### Proof
 
-The real script, run on four prompts on 2026-11-23:
+The real script, run on four prompts on 2026-11-26:
 
 | Prompt | What the hook prints |
 | --- | --- |
-| `orchestrate a workflow to update one file` | The full recipe (6,802 characters) |
-| `orchestrate a workflow and outline the plan for a one-file change.` | The plan-only recipe (1,955 characters) |
+| `orchestrate a workflow to update one file` | The full recipe (7,376 characters) |
+| `orchestrate a workflow and outline the plan for a one-file change.` | The plan-only recipe (2,566 characters) |
 | `what time is it` | Nothing |
 | `can you orchestrate a workflow?` | Nothing, because a question is not a request |
 
@@ -216,7 +216,7 @@ jq -n --arg prompt 'orchestrate a workflow to update one file' '{prompt: $prompt
   | bash hooks/inject-orchestration-recipe.sh | jq -r '.hookSpecificOutput.additionalContext' | head -5
 ```
 
-26 of the tests cover the hook, including quoted, negated and malformed prompts.
+28 of the tests cover the hook, including quoted, negated and malformed prompts.
 
 ### Use it
 

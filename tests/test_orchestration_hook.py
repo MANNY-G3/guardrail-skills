@@ -26,6 +26,21 @@ RUN_MARKERS = (
     "never a target",
     "spend so far",
     "THIS job only",
+    "HOW THE RUN ENDS",
+)
+RUN_ENDING_PHRASES = (
+    "how the run ends",
+    "until it is finished",
+    "minutes, agents started or tokens",
+    "ask once before launch",
+    '"run until the ask is met, or pause at a limit you set?"',
+    "headless or unattended",
+    "said not to be asked",
+    "first status note",
+    "a limit the user set is a pause point",
+    "ask whether to go on",
+    "never a limit",
+    "never stop on your own clock",
 )
 
 
@@ -155,6 +170,7 @@ class OrchestrationHookTests(unittest.TestCase):
             "KEEP THE RIG",
             "NEVER A TARGET",
             "FRESH SEAT",
+            "HOW THE RUN ENDS",
         ):
             self.assertTrue(marker in normalized, "Missing plan marker: " + marker)
         self.assertNotIn(">>> END RECIPE <<<", context)
@@ -440,6 +456,25 @@ class OrchestrationHookTests(unittest.TestCase):
             ):
                 with self.subTest(mode=mode, retired=retired):
                     self.assertNotIn(retired.casefold(), context.casefold())
+
+    def assert_asks_how_the_run_ends(self, text, *, plan):
+        normalized = re.sub(r"\s+", " ", text).casefold()
+        phrases = RUN_ENDING_PHRASES + (("approval ask",) if plan else ())
+        for phrase in phrases:
+            with self.subTest(plan=plan, phrase=phrase):
+                self.assertIn(phrase, normalized)
+
+    def test_both_recipes_ask_how_the_run_ends(self):
+        for mode, plan in (("default", False), ("plan", True)):
+            result = self.run_hook({
+                "prompt": "u" + "c" + " workflow", "permission_mode": mode,
+            })
+            context = self.assert_plan_only(result) if plan else self.assert_run(result)
+            self.assert_asks_how_the_run_ends(context, plan=plan)
+
+    def test_companion_rules_ask_how_the_run_ends(self):
+        rules = (REPO / "examples/orchestration-rules.md").read_text()
+        self.assert_asks_how_the_run_ends(rules, plan=True)
 
     def test_run_has_one_fresh_fix_instruction(self):
         context = self.assert_run(self.run_hook({"prompt": "u" + "c" + " workflow"}))

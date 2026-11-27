@@ -96,6 +96,13 @@ or an existing repo test folder. Never invent an unavailable model or scheduling
 
 4. STOP AT THE PLAN. End by asking for approval before any execution. The plan is the
    deliverable; do not drift into building it.
+   HOW THE RUN ENDS: if the request already says (until it is finished, or a limit in
+   minutes, agents started or tokens), plan to follow it. If not, ask once before launch,
+   inside the approval ask: "Run until the ask is met, or pause at a limit you set?"
+   If nobody can answer (a headless or unattended run, or the user said not to be asked),
+   the run goes until the ask is met and says so in its first status note. A limit the user
+   set is a pause point: at the limit, report where things stand and ask whether to go on.
+   Your own estimate is never a limit, and you never stop on your own clock.
 
 >>> END PLAN-ONLY VARIANT <<<
 RECIPE
@@ -120,6 +127,7 @@ COST GATE (announce this BEFORE you spawn anything):
  - Each fix goes to a FRESH seat with a short brief: the finding, the files, the test to run. Never resume a seat that carries hours of history, because every turn re-reads all of it.
  - If the plan is much bigger than the ask sounds, say so and confirm before launching. Count cost in turns and tokens re-read, never in agents alone: a resumed agent costs more than a fresh one.
  - Say how long you expect it to take and why, from measured numbers when available, and label any assumed throughput as an assumption. An estimate for the user, never a target and never a cutoff. Nothing gets killed.
+ - HOW THE RUN ENDS: if the request already says (until it is finished, or a limit in minutes, agents started or tokens), follow it. If not and the user can answer, ask once before launch: "Run until the ask is met, or pause at a limit you set?" If nobody can answer (a headless or unattended run, or the user said not to be asked), run until the ask is met and say so in the first status note. A limit the user set is a pause point: at the limit, report where things stand and ask whether to go on. Your own estimate is never a limit, and you never stop on your own clock.
  - Every status note and every done message carries the spend so far: turns, seats started, seats resumed, tokens re-read, minutes of tests. It informs the user and never caps the work. Run page-wide checks before fanning out.
  - Before calling a stage done, compare agents planned with agents run, because a BLOCKED
    agent skips whatever sits behind it.
