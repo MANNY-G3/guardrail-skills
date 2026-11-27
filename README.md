@@ -4,7 +4,7 @@ Three small guardrails for AI agents that write and code. Each one is a text fil
 
 | Guardrail | The problem it solves |
 | --- | --- |
-| [slop-scrub](#slop-scrub) | Writing from an AI reads like an AI wrote it. |
+| [slop-scrub](#slop-scrub) | A draft from your AI sounds nothing like you. |
 | [comment-scrub](#comment-scrub) | AI agents bury code under comments that repeat the code. |
 | [Orchestration recipe hook](#orchestration-recipe-hook) | A job split across many agents sprawls, with no estimate and no tests. |
 
@@ -15,15 +15,19 @@ Three small guardrails for AI agents that write and code. Each one is a text fil
 
 ## slop-scrub
 
-**The problem.** A draft from an AI reads like one. Readers hear it and AI writing detectors flag it. It also sounds nothing like you.
+The whole point of this skill is to help you take your writing and have your AI use your voice at scale, without it sounding like slop.
+
+**The problem.** You ask your AI for a draft and it sounds nothing like you. It can read like an AI wrote it, and readers hear that.
 
 **What it does.** Two jobs. It runs 14 checks on any draft: claims with no source, stock words, em dashes, sentences that all run the same length. And it writes a piece from three to five things that happened, plain if you give it none of your writing and in your voice if you give it two or three finished pieces.
 
 ### Proof
 
-Same AI model, same request, with and without the skill. Nobody edited any of the four texts. The scores come from one of the leading AI writing detectors, scanned on 2026-11-23. The author is the maintainer of this repo.
+Same AI model, same request, with and without the skill. Nobody edited any of the four texts. AI writing detectors can flag a draft that reads like an AI wrote it, so each text has a score from one of the leading ones, scanned on 2026-11-23. The author is the maintainer of this repo.
 
-**The request:** a short post telling founders what slop-scrub is and how to get it. It came with six plain facts and three things that happened: two drafts came back marked 100% AI one evening, the rest of that batch was full of em dashes, and the first draft that read as his own was built from sentences he had typed.
+**The request:** a short post telling founders what slop-scrub is and how to get it. It came with six plain facts and three things that happened.
+
+The drafts without the skill were each written once. Each piece with the skill is the highest-scoring of several written the same way in the larger test below, so read it as the best case. Of the 8 written from this request with no samples, 7 scored human, and all 4 written with one post of the author's did too. A comparison like this can also come out the other way, with the draft written without the skill scoring higher.
 
 #### 1. No writing given
 
@@ -47,11 +51,15 @@ Same AI model, same request, with and without the skill. Nobody edited any of th
 
 **With the skill: 99.8% human** · [text](examples/no-writing-after.txt)
 
+<details><summary>Read the piece</summary>
+
 > slop-scrub is a free, open-source checklist for AI writing that I made, and founders who use AI to help them write can get it on GitHub.
 >
 > One evening in November I checked drafts from my AI by hand, one at a time. Draft 14 and draft 17 both came back marked 100% AI. I didn't check the rest of that batch, because I could see they were full of em dashes. slop-scrub removes em dashes and banned words such as "delve".
 >
 > The first draft that came back reading as mine was 113 words long, and it was built from sentences I had typed myself.
+
+</details>
 
 #### 2. Your writing given
 
@@ -79,11 +87,15 @@ Here the author also sent one post of his own, on another subject (cold outreach
 
 **With the skill: 99.8% human** · [text](examples/your-writing-after.txt)
 
+<details><summary>Read the piece</summary>
+
 > I'm giving away slop-scrub, my open-source checklist for AI writing (it costs $0), to founders who use AI to help them write, and it's public on GitHub.
 >
 > One evening in November I checked drafts from my AI by hand, one at a time. Draft 14 and draft 17 both came back marked 100% AI. Seriously. I could see the other drafts in that batch were full of em dashes, so I didn't check them.
 >
 > The first draft that came back reading as mine was 113 words long, and it was literally built from sentences I'd typed myself.
+
+</details>
 
 Three AI readers saw that last piece with no name on it, and all three matched it to its author. About 1 word in 100 sits in a run of three or more words taken from his sample, so it carries his habits and leaves his old sentences alone.
 
@@ -102,7 +114,7 @@ mkdir -p ~/.claude/skills && cp -R skills/slop-scrub ~/.claude/skills/
 
 Codex: copy the folder to `~/.agents/skills/` and use `$slop-scrub`. Any other tool: paste `SKILL.md`, below its `---` header, into your custom instructions. Every mode, the local lint and the hook examples: [docs/slop-scrub.md](docs/slop-scrub.md).
 
-**It won't work every time.** Results vary by model, request and detector, and no score is a promise. Try it on one draft first and read the result before you rely on it. If an install step fails, stop and delete what you copied.
+**Results depend on the writing you give it.** They also vary by model, request and detector, and no score is a promise. Test it on one of your own drafts and judge the result yourself before you rely on it. If an install step fails, stop and delete what you copied.
 
 ## comment-scrub
 
@@ -178,7 +190,7 @@ mkdir -p ~/.claude/skills && cp -R skills/comment-scrub ~/.claude/skills/
 
 Type `/comment-scrub` after your agent writes code. Codex: copy the folder to `~/.agents/skills/` and use `$comment-scrub`. To run it on every commit, see [examples/pre-commit-hook.sh](examples/pre-commit-hook.sh) and [examples/github-actions.yml](examples/github-actions.yml).
 
-**It won't work every time.** It's a checklist your agent follows, so it can miss a comment or cut one you'd keep. Read the diff before you commit.
+**Results depend on the code you give it.** It's a checklist your agent follows, so it can miss a comment or cut one you'd keep. Read the diff before you commit.
 
 ## Orchestration recipe hook
 
@@ -214,7 +226,7 @@ jq -n --arg prompt 'orchestrate a workflow to update one file' '{prompt: $prompt
 
 The recipe guides the model and enforces nothing, so keep your permission prompts and spend limits on.
 
-**It won't work every time, and multi-agent runs can use a lot of tokens.** You're responsible for your own usage. Try it on a small job first, and if an install step fails, stop and undo it.
+**Results depend on the job you give it, and multi-agent runs can use a lot of tokens.** You're responsible for your own usage. Try it on a small job first, and if an install step fails, stop and undo it.
 
 ## Contributing
 
